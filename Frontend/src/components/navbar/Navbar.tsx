@@ -6,12 +6,21 @@ import { Link } from 'react-router-dom';
 import Drawer from '@material-ui/core/Drawer';
 import { useState } from 'react';
 import MenuIcon from '@mui/icons-material/Menu';
-import { IconButton } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import { Button, Card, IconButton, Modal, Typography } from '@mui/material';
+import LoginForm from '@components/login-signup/LoginForm';
+import SignUpForm from '@components/login-signup/SignUpForm';
 
 const Navbar = () => {
 
     // to open/close drawer************
-    const [openDrawer, setOpenDrawer] = useState(false)
+    const [openDrawer, setOpenDrawer] = useState(false);
+    const [openAuthModal, setOpenAuthModal] = useState(false);
+    const [showLoginIn, setShowLogin] = useState(true);
+
+    const authModalHandler = () => {
+        setOpenAuthModal(false)
+    }
 
     return (
         <>
@@ -31,10 +40,18 @@ const Navbar = () => {
                         </ListItem>
                     </List>
                     <List sx={{ display: { xs: "none", sm: "block", } }}>
-                        <ListItem>Login</ListItem>
+                        <ListItem>
+                            <Button onClick={() => { setOpenAuthModal(true) }}>
+                                Login
+                            </Button>
+                        </ListItem>
                     </List>
                     <List sx={{ display: { xs: "none", sm: "block", } }}>
-                        <ListItem>Signup</ListItem>
+                        <ListItem>
+                            <Button onClick={() => { setOpenAuthModal(true); setShowLogin(false) }}>
+                                Signup
+                            </Button>
+                        </ListItem>
                     </List>
 
                     {/* Drawer component for pulling out the sidebar*********** */}
@@ -48,13 +65,38 @@ const Navbar = () => {
                                     Add Restaurant
                                 </Link>
                             </ListItem>
-                            <ListItem>Login</ListItem>
-                            <ListItem>Signup</ListItem>
+                            <ListItem>
+                                <Button onClick={() => { setOpenAuthModal(true) }}>
+                                    Login
+                                </Button>
+                            </ListItem>
+                            <ListItem>
+                                <Button onClick={() => { setOpenAuthModal(true); setShowLogin(false) }}>
+                                    Signup
+                                </Button>
+                            </ListItem>
                         </List>
                     </Drawer>
-
                 </Toolbar>
             </AppBar>
+
+            <Modal open={openAuthModal} onClose={authModalHandler}>
+                <Card sx={{ 'width': { md: '50%', sx: '100%' }, 'position': 'relative', 'transform': 'translate(50%,50%)', 'padding': '1rem' }}>
+                    <div>
+                        <CloseIcon onClick={authModalHandler} sx={{ 'marginLeft': 'auto' }} />
+                    </div>
+                    <div>
+                        {showLoginIn && <LoginForm />}
+                        {!showLoginIn && <SignUpForm />}
+                        {showLoginIn && <Typography>
+                            Not a member? <span onClick={() => { setShowLogin(false) }}>Sign up</span> here!
+                        </Typography>}
+                        {!showLoginIn && <Typography>
+                            Already a member? <span onClick={() => { setShowLogin(true) }}>Log in</span> here!
+                        </Typography>}
+                    </div>
+                </Card>
+            </Modal>
         </>
     )
 }
