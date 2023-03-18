@@ -7,7 +7,7 @@ import Drawer from '@material-ui/core/Drawer';
 import { useState } from 'react';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
-import { Button, Card, IconButton, Modal, Typography } from '@mui/material';
+import { Button, Card, IconButton, Dialog, Typography, DialogTitle, DialogContent } from '@mui/material';
 import LoginForm from '@components/login-signup/LoginForm';
 import SignUpForm from '@components/login-signup/SignUpForm';
 
@@ -16,15 +16,28 @@ const Navbar = () => {
     // to open/close drawer************
     const [openDrawer, setOpenDrawer] = useState(false);
     const [openAuthModal, setOpenAuthModal] = useState(false);
-    const [showLoginIn, setShowLogin] = useState(true);
+    const [showLogin, setShowLogin] = useState(true);
+    const [modalTitle, setModalTitle] = useState('')
 
     const authModalHandler = () => {
         setOpenAuthModal(false)
     }
 
+    const loginContentHandler: Function = () => {
+        setOpenAuthModal(true);
+        setShowLogin(true);
+        setModalTitle('Login')
+    }
+
+    const signupContentHandler: Function = () => {
+        setOpenAuthModal(true);
+        setShowLogin(false);
+        setModalTitle('Sign Up')
+    }
+
     return (
         <>
-            <AppBar sx={{ backgroundColor: 'transparent' }}>
+            <AppBar elevation={0} sx={{ backgroundColor: 'transparent' }}>
                 <Toolbar>
                     <IconButton sx={{ display: { xs: 'block', sm: 'none' } }} onClick={() => setOpenDrawer(prev => !prev)}>
                         <MenuIcon sx={{ "color": 'white' }} />
@@ -41,14 +54,14 @@ const Navbar = () => {
                     </List>
                     <List sx={{ display: { xs: "none", sm: "block", } }}>
                         <ListItem>
-                            <Button onClick={() => { setOpenAuthModal(true) }}>
+                            <Button onClick={() => { loginContentHandler() }}>
                                 Login
                             </Button>
                         </ListItem>
                     </List>
                     <List sx={{ display: { xs: "none", sm: "block", } }}>
                         <ListItem>
-                            <Button onClick={() => { setOpenAuthModal(true); setShowLogin(false) }}>
+                            <Button onClick={() => { signupContentHandler() }}>
                                 Signup
                             </Button>
                         </ListItem>
@@ -66,12 +79,12 @@ const Navbar = () => {
                                 </Link>
                             </ListItem>
                             <ListItem>
-                                <Button onClick={() => { setOpenAuthModal(true) }}>
+                                <Button onClick={() => { loginContentHandler() }}>
                                     Login
                                 </Button>
                             </ListItem>
                             <ListItem>
-                                <Button onClick={() => { setOpenAuthModal(true); setShowLogin(false) }}>
+                                <Button onClick={() => { signupContentHandler() }}>
                                     Signup
                                 </Button>
                             </ListItem>
@@ -80,23 +93,39 @@ const Navbar = () => {
                 </Toolbar>
             </AppBar>
 
-            <Modal open={openAuthModal} onClose={authModalHandler}>
-                <Card sx={{ 'width': { md: '50%', sx: '100%' }, 'position': 'relative', 'transform': 'translate(50%,50%)', 'padding': '1rem' }}>
-                    <div>
-                        <CloseIcon onClick={authModalHandler} sx={{ 'marginLeft': 'auto' }} />
-                    </div>
-                    <div>
-                        {showLoginIn && <LoginForm />}
-                        {!showLoginIn && <SignUpForm />}
-                        {showLoginIn && <Typography>
-                            Not a member? <span onClick={() => { setShowLogin(false) }}>Sign up</span> here!
-                        </Typography>}
-                        {!showLoginIn && <Typography>
-                            Already a member? <span onClick={() => { setShowLogin(true) }}>Log in</span> here!
-                        </Typography>}
-                    </div>
-                </Card>
-            </Modal>
+            <Dialog sx={{
+                '& .MuiDialog-paper': {
+                    maxWidth: '90%',
+                    width: { xs: '100%', sm: '40%' },
+                    margin: { xs: 0, sm: '5vh auto 0' },
+                },
+                '& .MuiDialogTitle-root': {
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                },
+                '& .MuiDialogTitle-root > .MuiIconButton-root': {
+                    marginRight: '-12px',
+                    marginTop: '-12px',
+                },
+            }} open={openAuthModal} onClose={authModalHandler}>
+                <DialogTitle style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    {modalTitle}
+                    <IconButton>
+                        <CloseIcon onClick={authModalHandler} />
+                    </IconButton>
+                </DialogTitle>
+                <DialogContent>
+                    {showLogin && <LoginForm />}
+                    {!showLogin && <SignUpForm />}
+                    <Typography sx={{ marginTop: '0.25rem' }}>
+                        {showLogin && 'Not a member? '}
+                        {showLogin && <span onClick={() => { signupContentHandler() }}>Sign up</span>}
+                        {!showLogin && 'Already a member? '}
+                        {!showLogin && <span onClick={() => { loginContentHandler() }}>Log in</span>}
+                    </Typography>
+                </DialogContent>
+            </Dialog>
         </>
     )
 }
