@@ -3,6 +3,8 @@ import { loginHandler } from "../../controllers/auth/authControllers";
 
 const router = express.Router();
 
-router.route('/login').get(loginHandler)
+router.route('/login').post(loginHandler)
+
+router.route('/register')
 
 module.exports = router

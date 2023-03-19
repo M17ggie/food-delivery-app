@@ -3,8 +3,8 @@ require('dotenv').config();
 
 const app = express();
 
-const authRouter = require('./routes/auth/authRoutes')
+const auth = require('./routes/auth/auth')
 
-app.use('/login',authRouter)
+app.use('/api/v1/auth',auth)
 
 export default app
