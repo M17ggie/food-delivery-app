@@ -111,8 +111,8 @@ const Navbar = () => {
             }} open={openAuthModal} onClose={authModalHandler}>
                 <DialogTitle style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     {modalTitle}
-                    <IconButton>
-                        <CloseIcon onClick={authModalHandler} />
+                    <IconButton onClick={authModalHandler}>
+                        <CloseIcon />
                     </IconButton>
                 </DialogTitle>
                 <DialogContent>
