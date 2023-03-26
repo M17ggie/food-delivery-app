@@ -5,8 +5,9 @@ node_modules
 dist
 
 #env
-.env.dev
-.env.prod
+cofig
+.env
+*.env
 
 # Editor directories and files
 .vscode/*

@@ -6,7 +6,7 @@ const SignUpForm = () => {
 
     const [signUpData, setSignUpData] = useState({
         name: '',
-        phoneNumber: '',
+        email: '',
         password: ''
     });
 
@@ -14,7 +14,7 @@ const SignUpForm = () => {
 
     const schema = yup.object().shape({
         name: yup.string().min(3, 'Name must be atleast 3 characters long').max(20, 'Name should not exceed 20 characters').matches(/^[a-zA-Z\s]*$/, "Name must not include numbers or special characters").required('Name is a required field'),
-        phoneNumber: yup.string().required().matches(/^([7-9]\d{9})$/, 'Please enter valid phone number'),
+        email: yup.string().required().matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, 'Please enter valid email'),
         password: yup.string().required().trim().test('len', "Password must be between 8 & 15 characters", value => value.length >= 8 && value.length <= 15)
     })
 
@@ -61,14 +61,14 @@ const SignUpForm = () => {
 
             <TextField
                 onChange={handleChange}
-                inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+                inputProps={{ inputMode: 'email' }}
                 size="small"
-                name="phoneNumber"
-                id="phoneNumber"
+                name="email"
+                id="email"
                 variant='outlined'
-                placeholder='Phone Number'
-                error={!!errors.phoneNumber}
-                helperText={<span style={{ color: 'red' }}>{errors.phoneNumber}</span>}
+                placeholder='Email'
+                error={!!errors.email}
+                helperText={<span style={{ color: 'red' }}>{errors.email}</span>}
             />
 
             <TextField
