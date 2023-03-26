@@ -4,17 +4,13 @@ const ErrorResponse = require('../../utils/errorResponse');
 import User from '../../models/User'
 
 //User authentication
-export const loginUserHandler = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    const { name, password, email, role } = req.body;
 
-    const user = await User.create({
-        name,
-        password,
-        email,
-        role
-    })
+export const loginUserHandler = asyncHandler(async (err: any, req: Request, res: Response, next: NextFunction) => {
+    const { password, email } = req.body;
 
-    res.send('Hi')
+    if (!email || !password) {
+        return next(err)
+    }
 })
 
 export const registerUserHandler = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
@@ -27,5 +23,7 @@ export const registerUserHandler = asyncHandler(async (req: Request, res: Respon
         role
     })
 
-    res.send('Registration successfull')
+    const token = user.getSignedJWTToken();
+
+    res.status(200).send({ token })
 })

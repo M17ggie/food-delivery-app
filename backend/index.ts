@@ -2,7 +2,7 @@ import app from "./src/app"
 const mongoose = require('mongoose');
 
 //DB Connection
-mongoose.connect(process.env.MONGO_URI, {
+mongoose.connect(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@cluster0.mimdgki.mongodb.net/${process.env.MONGO_DB}?retryWrites=true&w=majority`, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }).then(() => {

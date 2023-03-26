@@ -1,14 +1,16 @@
 import { NextFunction } from "connect";
 import mongoose from "mongoose";
-const bcrypt = require('bcrypt');
+import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
 
-interface IUser {
+interface IUser extends mongoose.Document {
     name: String,
     email: String,
     role: mongoose.Types.ObjectId,
-    password: String,
+    password: string,
     resetPasswordToken: String,
-    resetPasswordExpire: Date
+    resetPasswordExpire: Date,
+    getSignedJWTToken(): String
 }
 
 const UserSchema = new mongoose.Schema<IUser>({
@@ -51,5 +53,10 @@ UserSchema.pre('save', async function (next: NextFunction) {
     next();
 })
 
-const User = mongoose.model('User', UserSchema)
+//Sign JWT and return
+UserSchema.methods.getSignedJWTToken = function () {
+    return jwt.sign({ id: this._id }, process.env.JWT_SECRET!)
+}
+
+const User = mongoose.model<IUser>('User', UserSchema)
 export default User

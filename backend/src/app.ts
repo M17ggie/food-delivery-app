@@ -7,11 +7,11 @@ require('dotenv').config({ path: envPath });
 const app = express();
 app.use(express.json())
 
-const auth = require('./routes/auth/authRoutes');
+const authRoutes = require('./routes/auth/authRoutes');
 const authErrorHandler = require('./middleware/authError')
 
 //authentication
-app.use('/api/v1/auth', auth);
+app.use('/api/v1/auth', authRoutes);
 app.use(authErrorHandler);
 
 export default app
