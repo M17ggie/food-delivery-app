@@ -8,9 +8,10 @@ const app = express();
 app.use(express.json())
 
 const auth = require('./routes/auth/authRoutes');
-const errorHandler = require('./middleware/error')
+const authErrorHandler = require('./middleware/authError')
 
+//authentication
 app.use('/api/v1/auth', auth);
-app.use(errorHandler);
+app.use(authErrorHandler);
 
 export default app
