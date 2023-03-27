@@ -12,7 +12,6 @@ mongoose.connect(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PA
 })
 
 //PORT connection
-const PORT = 5000;
-app.listen(PORT, () => {
-    console.log(`Listening to PORT ${PORT}`)
+app.listen(process.env.PORT, () => {
+    console.log(`Listening to PORT ${process.env.PORT}`)
 })
