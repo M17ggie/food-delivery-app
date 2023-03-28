@@ -10,7 +10,8 @@ interface IUser extends mongoose.Document {
     password: string,
     resetPasswordToken: String,
     resetPasswordExpire: Date,
-    getSignedJWTToken(): String
+    getSignedJWTToken(): String,
+    matchedPasswords(password: string): Boolean
 }
 
 const UserSchema = new mongoose.Schema<IUser>({
@@ -56,6 +57,11 @@ UserSchema.pre('save', async function (next: NextFunction) {
 //Sign JWT and return
 UserSchema.methods.getSignedJWTToken = function () {
     return jwt.sign({ id: this._id }, process.env.JWT_SECRET!)
+}
+
+//Match passwords
+UserSchema.methods.matchedPasswords = async function (enteredPassword: string) {
+    return await bcrypt.compare(enteredPassword, this.password)
 }
 
 const User = mongoose.model<IUser>('User', UserSchema)
