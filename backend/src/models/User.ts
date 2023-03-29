@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 
-interface IUser extends mongoose.Document {
+export interface IUser extends mongoose.Document {
     name: String,
     email: String,
     role: mongoose.Types.ObjectId,

@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { asyncHandler } from '../../middleware/async'
 import { ErrorResponse } from "../../utils/errorResponse";
-import User from '../../models/User'
+import User, { IUser } from '../../models/User'
 
 //User authentication
 
@@ -26,8 +26,7 @@ export const loginUserHandler = asyncHandler(async (req: Request, res: Response,
     }
 
     //send token if all goes well
-    const token = user.getSignedJWTToken();
-    res.status(200).send({ token })
+    sendTokenResponse(user, 200, res);
 })
 
 export const registerUserHandler = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
@@ -40,6 +39,18 @@ export const registerUserHandler = asyncHandler(async (req: Request, res: Respon
         role
     })
 
+    //send cookie
+    sendTokenResponse(user, 200, res);
+});
+
+// cookie maker***********
+const sendTokenResponse = (user: IUser, statusCode: number, res: Response) => {
     const token = user.getSignedJWTToken();
-    res.status(200).send({ token })
-})
+    const expiryDate = new Date();
+    expiryDate.setHours(expiryDate.getHours() + 1);
+    const options = {
+        expires: expiryDate,
+        httpOnly: true
+    }
+    res.status(statusCode).cookie('token', token, options).send('Hi')
+}
