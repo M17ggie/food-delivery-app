@@ -46,10 +46,10 @@ export const registerUserHandler = asyncHandler(async (req: Request, res: Respon
 // cookie maker***********
 const sendTokenResponse = (user: IUser, statusCode: number, res: Response) => {
     const token = user.getSignedJWTToken();
-    const expiryDate = new Date();
-    expiryDate.setHours(expiryDate.getHours() + 1);
+    const expiryTime = new Date().getTime() + (60 * 60 * 1000);
+    const expiryDate = new Date(expiryTime).toLocaleString('en-US', { timeZone: 'Asia/Kolkata' });
     const options = {
-        expires: expiryDate,
+        expires: new Date(expiryDate),
         httpOnly: true
     }
     res.status(statusCode).cookie('token', token, options).send('Hi')
