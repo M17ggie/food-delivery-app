@@ -1,10 +1,23 @@
 const express = require('express');
-require('dotenv').config();
+const path = require('path');
+const cookieParser = require('cookie-parser')
+
+const envPath = path.resolve(__dirname, 'config', '.env')
+require('dotenv').config({ path: envPath });
 
 const app = express();
 
-const authRouter = require('./routes/auth/authRoutes')
+//body parser
+app.use(express.json())
 
-app.use('/login',authRouter)
+//cookie parser
+app.use(cookieParser())
+
+const authRoutes = require('./routes/auth/authRoutes');
+const authErrorHandler = require('./middleware/authError');
+
+//authentication
+app.use('/api/v1/auth', authRoutes);
+app.use(authErrorHandler);
 
 export default app
