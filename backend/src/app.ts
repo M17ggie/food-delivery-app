@@ -1,11 +1,15 @@
 const express = require('express');
 const path = require('path');
-const cookieParser = require('cookie-parser')
+const cookieParser = require('cookie-parser');
+import cors from 'cors';
 
 const envPath = path.resolve(__dirname, 'config', '.env')
 require('dotenv').config({ path: envPath });
 
 const app = express();
+
+//cors
+app.use(cors())
 
 //body parser
 app.use(express.json())

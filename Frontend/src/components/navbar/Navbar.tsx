@@ -7,7 +7,7 @@ import Drawer from '@material-ui/core/Drawer';
 import { useState } from 'react';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
-import { Button, Card, IconButton, Dialog, Typography, DialogTitle, DialogContent } from '@mui/material';
+import { Button, IconButton, Dialog, Typography, DialogTitle, DialogContent, Box } from '@mui/material';
 import LoginForm from '@components/login-signup/LoginForm';
 import SignUpForm from '@components/login-signup/SignUpForm';
 
@@ -35,6 +35,24 @@ const Navbar = () => {
         setModalTitle('Sign Up')
     }
 
+    const listItemsContent: React.ReactNode = <List sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" } }}>
+        <ListItem>
+            <Link to="/partner-with-us">
+                Add Restaurant
+            </Link>
+        </ListItem>
+        <ListItem>
+            <Button onClick={() => { loginContentHandler() }}>
+                Login
+            </Button>
+        </ListItem>
+        <ListItem>
+            <Button onClick={() => { signupContentHandler() }}>
+                Signup
+            </Button>
+        </ListItem>
+    </List>
+
     return (
         <>
             <AppBar elevation={0} sx={{ backgroundColor: 'transparent' }}>
@@ -45,50 +63,16 @@ const Navbar = () => {
                     {/* <List>
                         <ListItem>Add Logo Here</ListItem>
                     </List> */}
-                    <List sx={{ marginLeft: 'auto', display: { xs: "none", sm: "block", } }}>
-                        <ListItem>
-                            <Link to="/partner-with-us">
-                                Add Restaurant
-                            </Link>
-                        </ListItem>
-                    </List>
-                    <List sx={{ display: { xs: "none", sm: "block", } }}>
-                        <ListItem>
-                            <Button onClick={() => { loginContentHandler() }}>
-                                Login
-                            </Button>
-                        </ListItem>
-                    </List>
-                    <List sx={{ display: { xs: "none", sm: "block", } }}>
-                        <ListItem>
-                            <Button onClick={() => { signupContentHandler() }}>
-                                Signup
-                            </Button>
-                        </ListItem>
-                    </List>
+                    <Box sx={{ marginLeft: 'auto', display: { xs: "none", sm: "flex" }, flexDirection: 'column' }}>
+                        {listItemsContent}
+                    </Box>
 
                     {/* Drawer component for pulling out the sidebar*********** */}
                     <Drawer PaperProps={{ style: { width: '75%' } }} open={openDrawer} onClose={() => { setOpenDrawer(false) }}>
                         {/* <List>
                         <ListItem>Add Logo Here</ListItem>
                         </List> */}
-                        <List>
-                            <ListItem>
-                                <Link to="/partner-with-us">
-                                    Add Restaurant
-                                </Link>
-                            </ListItem>
-                            <ListItem>
-                                <Button onClick={() => { loginContentHandler() }}>
-                                    Login
-                                </Button>
-                            </ListItem>
-                            <ListItem>
-                                <Button onClick={() => { signupContentHandler() }}>
-                                    Signup
-                                </Button>
-                            </ListItem>
-                        </List>
+                        {listItemsContent}
                     </Drawer>
                 </Toolbar>
             </AppBar>
@@ -116,13 +100,11 @@ const Navbar = () => {
                     </IconButton>
                 </DialogTitle>
                 <DialogContent>
-                    {showLogin && <LoginForm />}
-                    {!showLogin && <SignUpForm />}
+                    {showLogin && <LoginForm close={() => { setOpenAuthModal(false) }} />}
+                    {!showLogin && <SignUpForm login={() => { loginContentHandler() }} />}
                     <Typography sx={{ marginTop: '0.25rem' }}>
-                        {showLogin && 'Not a member? '}
-                        {showLogin && <span onClick={() => { signupContentHandler() }}>Sign up</span>}
-                        {!showLogin && 'Already a member? '}
-                        {!showLogin && <span onClick={() => { loginContentHandler() }}>Log in</span>}
+                        {showLogin && ['Not a member? ', <span onClick={() => { signupContentHandler() }}>Sign up</span>]}
+                        {!showLogin && ['Already a member? ', <span onClick={() => { loginContentHandler() }}>Log in</span>]}
                     </Typography>
                 </DialogContent>
             </Dialog>

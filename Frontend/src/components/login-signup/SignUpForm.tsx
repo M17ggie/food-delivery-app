@@ -1,8 +1,12 @@
 import { Box, Button, TextField } from '@mui/material'
 import React, { useState } from 'react'
 import * as yup from 'yup'
+import AuthButton from './AuthButton';
+import axios, { AxiosResponse, AxiosError } from 'axios'
 
-const SignUpForm = () => {
+const BASE_URL = import.meta.env.VITE_APP_BASE_URL;
+
+const SignUpForm = ({ login }: { login: Function }) => {
 
     const [signUpData, setSignUpData] = useState({
         name: '',
@@ -11,10 +15,11 @@ const SignUpForm = () => {
     });
 
     const [errors, setErrors] = useState<any>({});
+    const [isLoading, setIsLoading] = useState(false)
 
     const schema = yup.object().shape({
         name: yup.string().min(3, 'Name must be atleast 3 characters long').max(20, 'Name should not exceed 20 characters').matches(/^[a-zA-Z\s]*$/, "Name must not include numbers or special characters").required('Name is a required field'),
-        email: yup.string().required().matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, 'Please enter valid email'),
+        email: yup.string().required().matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, 'Please enter a valid email'),
         password: yup.string().required().trim().test('len', "Password must be between 8 & 15 characters", value => value.length >= 8 && value.length <= 15)
     })
 
@@ -28,10 +33,20 @@ const SignUpForm = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setIsLoading(true)
         try {
             await schema.validate(signUpData, { abortEarly: false });
-            setErrors({})
-            console.log(signUpData)
+            setErrors({});
+
+            axios.post(`${BASE_URL}/api/v1/auth/register`, {
+                ...signUpData
+            }).then((res: AxiosResponse) => {
+                login()
+                console.log(res.data)
+            }).catch((err: AxiosError) => {
+                console.log(err.response?.data)
+            })
+
         } catch (err: unknown) {
             if (err instanceof yup.ValidationError) {
                 const newErrors: { [key: string]: string } = {}
@@ -43,6 +58,7 @@ const SignUpForm = () => {
                 console.log('This is beyond my scope')
             }
         }
+        setIsLoading(false)
     }
 
     return (
@@ -82,7 +98,8 @@ const SignUpForm = () => {
                 error={!!errors.password}
                 helperText={<span style={{ color: 'red' }}>{errors.password}</span>}
             />
-            <Button type='submit' variant='contained' sx={{ width: '100%', maxWidth: { lg: '25%' }, margin: '0 auto' }}>Sign Up!</Button>
+            {/* <Button type='submit' variant='contained' sx={{ width: '100%', maxWidth: { lg: '25%' }, margin: '0 auto' }}>Sign Up!</Button> */}
+            <AuthButton isLoading={isLoading} name="Sign Up" />
         </Box>
     )
 }
