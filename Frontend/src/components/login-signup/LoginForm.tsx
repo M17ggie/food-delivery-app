@@ -2,17 +2,21 @@ import { useState } from 'react'
 import TextField from '@mui/material/TextField'
 import { Box, Button } from '@mui/material'
 import * as yup from 'yup';
+import axios, { AxiosResponse, AxiosError } from 'axios';
+import AuthButton from './AuthButton';
+const BASE_URL = import.meta.env.VITE_APP_BASE_URL
 
-const LoginForm = () => {
+const LoginForm = ({ close }: { close: Function }) => {
 
     const [loginData, setLoginData] = useState({
-        phoneNumber: "",
+        email: "",
         password: ""
     });
-    const [errors, setErrors] = useState<any>({})
+    const [errors, setErrors] = useState<any>({});
+    const [isLoading, setIsLoading] = useState(false)
 
     const schema = yup.object().shape({
-        phoneNumber: yup.string().trim().matches(/^([7-9]\d{9})$/, 'Please enter valid phone number'),
+        email: yup.string().required().matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, 'Please enter a valid email'),
         password: yup.string().required().trim().test('len', "Password must be between 8 & 15 characters", value => value.length >= 8 && value.length <= 15)
     })
 
@@ -26,10 +30,18 @@ const LoginForm = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setIsLoading(true)
         try {
             await schema.validate(loginData, { abortEarly: false });
-            setErrors({})
-            console.log(loginData)
+            setErrors({});
+            axios.post(`${BASE_URL}/api/v1/auth/login`, {
+                ...loginData
+            }).then((res: AxiosResponse) => {
+                close();
+                console.log(res)
+            }).catch((err: AxiosError) => {
+                console.log(err.message)
+            })
         } catch (err: unknown) {
             const newErrors: Record<string, string> = {}
             if (err instanceof yup.ValidationError) {
@@ -41,21 +53,22 @@ const LoginForm = () => {
                 console.log('What just happened is totally out of my scope')
             }
         }
+        setIsLoading(false)
     }
 
     return (
         <Box onSubmit={handleSubmit} component='form' sx={{ display: 'flex', flexDirection: 'column', gap: 3 }} >
             <TextField
                 onChange={handleChange}
-                value={loginData.phoneNumber}
-                name="phoneNumber"
-                id="phoneNumber"
-                inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+                value={loginData.email}
+                name="email"
+                id="email"
+                inputProps={{ inputMode: 'email' }}
                 size="small"
                 variant='outlined'
-                placeholder='Phone Number'
-                error={!!errors.phoneNumber}
-                helperText={<span style={{ color: 'red' }}>{errors.phoneNumber}</span>}
+                placeholder='Email'
+                error={!!errors.email}
+                helperText={<span style={{ color: 'red' }}>{errors.email}</span>}
             />
 
             <TextField
@@ -67,11 +80,11 @@ const LoginForm = () => {
                 size="small"
                 variant='outlined'
                 placeholder='Password'
-                error={!!errors.phoneNumber}
+                error={!!errors.password}
                 helperText={<span style={{ color: 'red' }}>{errors.password}</span>}
             />
 
-            <Button type='submit' variant='contained' sx={{ width: '100%', maxWidth: { lg: '25%' }, margin: '0 auto' }}>Login</Button>
+            <AuthButton isLoading={isLoading} name={'Login'} />
         </Box>
     )
 }
