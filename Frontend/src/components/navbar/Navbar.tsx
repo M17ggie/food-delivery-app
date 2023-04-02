@@ -6,10 +6,8 @@ import { Link } from 'react-router-dom';
 import Drawer from '@material-ui/core/Drawer';
 import { useState } from 'react';
 import MenuIcon from '@mui/icons-material/Menu';
-import CloseIcon from '@mui/icons-material/Close';
-import { Button, IconButton, Dialog, Typography, DialogTitle, DialogContent, Box } from '@mui/material';
-import LoginForm from '@components/login-signup/LoginForm';
-import SignUpForm from '@components/login-signup/SignUpForm';
+import { Button, IconButton, Box } from '@mui/material';
+import AuthModal from '@components/login-signup/AuthModal';
 
 const Navbar = () => {
 
@@ -77,37 +75,14 @@ const Navbar = () => {
                 </Toolbar>
             </AppBar>
 
-            <Dialog sx={{
-                '& .MuiDialog-paper': {
-                    maxWidth: '90%',
-                    width: { xs: '100%', sm: '40%' },
-                    margin: { xs: 0, sm: '5vh auto 0' },
-                },
-                '& .MuiDialogTitle-root': {
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                },
-                '& .MuiDialogTitle-root > .MuiIconButton-root': {
-                    marginRight: '-12px',
-                    marginTop: '-12px',
-                },
-            }} open={openAuthModal} onClose={authModalHandler}>
-                <DialogTitle style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    {modalTitle}
-                    <IconButton onClick={authModalHandler}>
-                        <CloseIcon />
-                    </IconButton>
-                </DialogTitle>
-                <DialogContent>
-                    {showLogin && <LoginForm close={() => { setOpenAuthModal(false) }} />}
-                    {!showLogin && <SignUpForm login={() => { loginContentHandler() }} />}
-                    <Typography sx={{ marginTop: '0.25rem' }}>
-                        {showLogin && ['Not a member? ', <span onClick={() => { signupContentHandler() }}>Sign up</span>]}
-                        {!showLogin && ['Already a member? ', <span onClick={() => { loginContentHandler() }}>Log in</span>]}
-                    </Typography>
-                </DialogContent>
-            </Dialog>
+            <AuthModal
+                openAuthModal={openAuthModal}
+                authModalHandler={authModalHandler}
+                showLogin={showLogin}
+                modalTitle={modalTitle}
+                loginContentHandler={loginContentHandler}
+                signupContentHandler={signupContentHandler}
+            />
         </>
     )
 }
