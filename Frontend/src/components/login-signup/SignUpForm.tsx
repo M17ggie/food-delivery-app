@@ -73,7 +73,7 @@ const SignUpForm = ({ login, userType }: { login: Function, userType: string }) 
                 id="name"
                 size="small"
                 variant='outlined'
-                placeholder='Name'
+                placeholder='Full Name'
                 error={!!errors.name}
                 helperText={<span style={{ color: 'red' }}>{errors.name}</span>}
             />
