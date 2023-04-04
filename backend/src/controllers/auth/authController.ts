@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 import { asyncHandler } from '../../middleware/async'
 import { ErrorResponse } from "../../utils/errorResponse";
-import User, { IUser } from '../../models/User'
+import User, { IUser } from '../../models/User';
 
-//User authentication
+//User authentication****************************
 
-export const loginUserHandler = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+export const userLoginHandler = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     const { password, email } = req.body;
 
     //credentials should not be empty
@@ -13,7 +13,7 @@ export const loginUserHandler = asyncHandler(async (req: Request, res: Response,
         return next(new ErrorResponse(`Email/Password hasn't been provided`, 400))
     }
 
-    //check id user exists
+    //check if user exists
     const user = await User.findOne({ email }).select(['password']);
 
     if (!user) {
@@ -29,7 +29,7 @@ export const loginUserHandler = asyncHandler(async (req: Request, res: Response,
     sendTokenResponse(user, 200, res);
 })
 
-export const registerUserHandler = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+export const userRegisterHandler = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     const { name, password, email, role } = req.body;
 
     const user = await User.create({
@@ -46,11 +46,18 @@ export const registerUserHandler = asyncHandler(async (req: Request, res: Respon
 // cookie maker***********
 const sendTokenResponse = (user: IUser, statusCode: number, res: Response) => {
     const token = user.getSignedJWTToken();
-    const expiryTime = new Date().getTime() + (60 * 60 * 1000);
-    const expiryDate = new Date(expiryTime).toLocaleString('en-US', { timeZone: 'Asia/Kolkata' });
     const options = {
-        expires: new Date(expiryDate),
         httpOnly: true
     }
-    res.status(statusCode).cookie('token', token, options).send('Hi')
+    res.status(statusCode).cookie('token', token, options).send()
 }
+
+// Restaurant authentication**************************
+
+export const restaurantLoginHandler = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    res.send('Restaurant login!')
+})
+
+export const restaurantRegisterHandler = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    res.send('Restaurant registered!')
+})

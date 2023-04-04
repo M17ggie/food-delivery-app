@@ -1,10 +1,13 @@
-import { Box, Card, Grid, Typography, Button } from '@mui/material'
+import { Box, Card, Grid, Typography, Button, DialogTitle, DialogContent, Dialog, IconButton } from '@mui/material'
 import styles from './PartnerWithUs.module.css'
 import CheckCircle from '@mui/icons-material/CheckCircle'
 import { HowItWorks, cardTitles, howItWorksData } from '@utils/texts/partner-with-us'
 import { CardContent } from '@material-ui/core'
-import AuthModal from '../../components/login-signup/AuthModal'
+import CloseIcon from '@mui/icons-material/Close';
 import { useState } from 'react'
+import LoginForm from '@components/login-signup/LoginForm'
+import SignUpForm from '@components/login-signup/SignUpForm';
+import Navbar from '../../components/navbar/Navbar'
 
 const PartnerWithUs = () => {
 
@@ -42,6 +45,8 @@ const PartnerWithUs = () => {
 
     return (
         <>
+            <Navbar userType='restaurant' />
+
             <div className="container">
 
                 {/* image****** */}
@@ -137,14 +142,37 @@ const PartnerWithUs = () => {
             </Box>
 
             {/* auth modal****************** */}
-            <AuthModal
-                openAuthModal={openAuthModal}
-                authModalHandler={authModalHandler}
-                showLogin={showLogin}
-                modalTitle={modalTitle}
-                loginContentHandler={loginContentHandler}
-                signupContentHandler={signupContentHandler}
-            />
+            <Dialog sx={{
+                '& .MuiDialog-paper': {
+                    maxWidth: '90%',
+                    width: { xs: '100%', sm: '40%' },
+                    margin: { xs: 0, sm: '5vh auto 0' },
+                },
+                '& .MuiDialogTitle-root': {
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                },
+                '& .MuiDialogTitle-root > .MuiIconButton-root': {
+                    marginRight: '-12px',
+                    marginTop: '-12px',
+                },
+            }} open={openAuthModal} onClose={() => { authModalHandler() }}>
+                <DialogTitle style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    {modalTitle}
+                    <IconButton onClick={() => { authModalHandler() }}>
+                        <CloseIcon />
+                    </IconButton>
+                </DialogTitle>
+                <DialogContent>
+                    {showLogin && <LoginForm userType='restaurant' close={() => { authModalHandler() }} />}
+                    {!showLogin && <SignUpForm userType='restaurant' login={() => { loginContentHandler() }} />}
+                    <Typography sx={{ marginTop: '0.25rem' }}>
+                        {showLogin && ['Not a member? ', <span onClick={() => { signupContentHandler() }}>Sign up</span>]}
+                        {!showLogin && ['Already a member? ', <span onClick={() => { loginContentHandler() }}>Log in</span>]}
+                    </Typography>
+                </DialogContent>
+            </Dialog>
         </>
     )
 }

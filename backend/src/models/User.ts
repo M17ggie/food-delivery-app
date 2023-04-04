@@ -2,6 +2,8 @@ import { NextFunction } from "connect";
 import mongoose from "mongoose";
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import Role from "./Role";
+import { Request } from "express";
 
 export interface IUser extends mongoose.Document {
     name: String,
@@ -27,10 +29,9 @@ const UserSchema = new mongoose.Schema<IUser>({
         required: [true, 'Please enter valid email'],
         unique: true
     },
-    role: {
-        type: mongoose.Schema.Types.ObjectId,
-        default: '641f38be0407d772cae46867'
-    },
+    role: [
+        { type: mongoose.Types.ObjectId, ref: Role }
+    ],
     password: {
         type: String,
         required: [true, "Password is required"],

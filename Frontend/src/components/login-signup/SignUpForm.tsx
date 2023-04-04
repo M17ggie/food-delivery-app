@@ -2,11 +2,14 @@ import { Box, Button, TextField } from '@mui/material'
 import React, { useState } from 'react'
 import * as yup from 'yup'
 import AuthButton from './AuthButton';
-import axios, { AxiosResponse, AxiosError } from 'axios'
+import axios, { AxiosResponse, AxiosError } from 'axios';
+import { useLocation } from 'react-router-dom';
 
 const BASE_URL = import.meta.env.VITE_APP_BASE_URL;
 
-const SignUpForm = ({ login }: { login: Function }) => {
+const SignUpForm = ({ login, userType }: { login: Function, userType: string }) => {
+
+    const path: string = useLocation().pathname;
 
     const [signUpData, setSignUpData] = useState({
         name: '',
@@ -38,7 +41,7 @@ const SignUpForm = ({ login }: { login: Function }) => {
             await schema.validate(signUpData, { abortEarly: false });
             setErrors({});
 
-            axios.post(`${BASE_URL}/api/v1/auth/register`, {
+            axios.post(`${BASE_URL}/api/v1/auth/${userType}/register`, {
                 ...signUpData
             }).then((res: AxiosResponse) => {
                 login()

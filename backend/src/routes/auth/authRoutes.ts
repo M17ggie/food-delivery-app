@@ -1,9 +1,14 @@
 import express from 'express';
-import { loginUserHandler, registerUserHandler } from "../../controllers/auth/authController";
+import { userLoginHandler, userRegisterHandler, restaurantLoginHandler, restaurantRegisterHandler } from "../../controllers/auth/authController";
 
 const router = express.Router();
-router.route('/login').post(loginUserHandler)
 
-router.route('/register').post(registerUserHandler)
+//user auth
+router.route('/user/login').post(userLoginHandler)
+router.route('/user/register').post(userRegisterHandler)
+
+//restaurant auth
+router.route('/restaurant/login').post(restaurantLoginHandler)
+router.route('/restaurant/register').post(restaurantRegisterHandler)
 
 module.exports = router
