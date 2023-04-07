@@ -6,7 +6,9 @@ import jwt from 'jsonwebtoken'
 export interface IRestaurant extends mongoose.Document {
     name: String,
     email: String,
-    getSignedJWTToken(): string
+    role: mongoose.Types.ObjectId[],
+    getSignedJWTToken(): string,
+    matchedPasswords(password: string): Boolean
 }
 
 const RestaurantSchema = new mongoose.Schema({
@@ -24,6 +26,10 @@ const RestaurantSchema = new mongoose.Schema({
     },
     resetPasswordToken: String,
     resetPasswordExpire: Date,
+    role: {
+        type: [{ type: mongoose.Types.ObjectId }],
+        default: ["642b07e10fe5426488d3b5c7"]
+    },
     name: {
         type: String,
         required: [true, "Name field should not be empty"],

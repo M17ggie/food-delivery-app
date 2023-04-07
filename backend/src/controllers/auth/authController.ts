@@ -4,15 +4,33 @@ import { ErrorResponse } from "../../utils/errorResponse";
 import User, { IUser } from '../../models/User';
 import Restaurant, { IRestaurant } from "../../models/Restaurant";
 
+// validate credentials***************************
+const validateCredentials = (email: string, password: string, next: NextFunction) => {
+    if (!email || !password) {
+        return next(new ErrorResponse(`Email/Password hasn't been provided`, 400))
+    }
+    next();
+}
+
+// register user**************************
+const registerUser = async (userModel: any, email: string, password: string, name: string) => {
+    const user = await userModel.create({
+        name,
+        email,
+        password
+    });
+
+    const { token, options } = sendTokenResponse(user);
+    return { token, options }
+}
+
 //User authentication****************************
 
 export const userLoginHandler = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     const { password, email } = req.body;
 
     //credentials should not be empty
-    if (!email || !password) {
-        return next(new ErrorResponse(`Email/Password hasn't been provided`, 400))
-    }
+    validateCredentials(email, password, next)
 
     //check if user exists
     const user = await User.findOne({ email }).select(['password']);
@@ -27,21 +45,16 @@ export const userLoginHandler = asyncHandler(async (req: Request, res: Response,
     }
 
     //send token if all goes well
-    sendTokenResponse(user, 200, res);
+    const { token, options } = sendTokenResponse(user);
+
+    res.cookie('token', token, options).send('Logged In')
 })
 
 export const userRegisterHandler = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    const { name, password, email, role } = req.body;
+    const { name, password, email } = req.body;
 
-    const user = await User.create({
-        name,
-        password,
-        email,
-        role
-    })
-
-    //send cookie
-    sendTokenResponse(user, 200, res);
+    const { token, options } = await registerUser(User, email, password, name);
+    res.cookie('token', token, options).send('Registered')
 });
 
 // Restaurant authentication**************************
@@ -49,9 +62,7 @@ export const userRegisterHandler = asyncHandler(async (req: Request, res: Respon
 export const restaurantLoginHandler = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     const { email, password } = req.body;
 
-    if (!email || !password) {
-        return next(new ErrorResponse(`Email/Password hasn't been provided`, 400))
-    }
+    validateCredentials(email, password, next);
 
     const restaurantUser = await Restaurant.findOne({ email }).select(["password"]);
 
@@ -59,19 +70,24 @@ export const restaurantLoginHandler = asyncHandler(async (req: Request, res: Res
         return next(new ErrorResponse(`User does not exist. Please register to continue.`, 404))
     }
 
-    sendTokenResponse(restaurantUser, 200, res)
+    const { token, options } = sendTokenResponse(restaurantUser)
+
+    res.cookie('token', token, options).send('Logged In!').redirect('/restaurant/dashboard')
 })
 
 export const restaurantRegisterHandler = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    res.send('Restaurant registered!')
+    const { email, password, name } = req.body;
+
+    const { token, options } = await registerUser(Restaurant, email, password, name);
+    res.cookie('token', token, options).send('Registered Restaurant')
 })
 
 
 // cookie maker***********
-const sendTokenResponse = (user: IUser | IRestaurant, statusCode: number, res: Response) => {
+const sendTokenResponse = (user: IUser | IRestaurant) => {
     const token = user.getSignedJWTToken();
     const options = {
         httpOnly: true
     }
-    res.status(statusCode).cookie('token', token, options).send()
+    return { token, options };
 }
