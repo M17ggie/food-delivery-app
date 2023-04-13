@@ -1,11 +1,17 @@
 import { Box, Button, InputAdornment, TextField, Typography } from '@mui/material'
 import React from 'react'
+import MapElement from '@components/map/MapElement';
 
 const RegisterRestaurant = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         console.log('Submitted')
+    }
+
+    const coordinatesHandler = (e: any) => {
+        const { lat, lng } = e.latlng;
+        console.log({ lat, lng })
     }
 
     return (
@@ -36,9 +42,11 @@ const RegisterRestaurant = () => {
                     <Typography>
                         This will help your customers and Food Cab riders to locate your store.
                     </Typography>
-                    <Box>
-                        *********MAP****************
+
+                    <Box sx={{ width: "50%", height: "auto" }}>
+                        <MapElement />
                     </Box>
+
                     <Typography>
                         or directly enter the co-ordinates
                     </Typography>
