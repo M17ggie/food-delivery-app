@@ -9,7 +9,6 @@ const validateCredentials = (email: string, password: string, next: NextFunction
     if (!email || !password) {
         return next(new ErrorResponse(`Email/Password hasn't been provided`, 400))
     }
-    next();
 }
 
 // register user**************************
@@ -72,13 +71,15 @@ export const restaurantLoginHandler = asyncHandler(async (req: Request, res: Res
 
     const { token, options } = sendTokenResponse(restaurantUser)
 
-    res.cookie('token', token, options).send('Logged In!').redirect('/restaurant/dashboard')
+    res.cookie('token', token, options).send('Logged In!')
 })
 
 export const restaurantRegisterHandler = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     const { email, password, name } = req.body;
 
     const { token, options } = await registerUser(Restaurant, email, password, name);
+
+    await registerUser(User, email, password, name);
     res.cookie('token', token, options).send('Registered Restaurant')
 })
 
