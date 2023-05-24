@@ -3,7 +3,7 @@ import DeliveryDiningOutlinedIcon from '@mui/icons-material/DeliveryDiningOutlin
 import RoomServiceOutlinedIcon from '@mui/icons-material/RoomServiceOutlined';
 
 // card titles******************
-export const cardTitles: string[] = ["FSSAI license copy", "PAN card copy", "Regular GSTIN (if applicable)", "Bank Account Details", "Restaurant Menu", "Dish Images"];
+export const cardTitles: string[] = ["FSSAI license copy", "PAN card copy", "Bank Account Details", "Restaurant Menu", "Dish Images"];
 
 
 //how it works*****************

@@ -1,13 +1,13 @@
 import { Box, Card, Grid, Typography, Button, DialogTitle, DialogContent, Dialog, IconButton } from '@mui/material'
 import styles from './PartnerWithUs.module.css'
 import CheckCircle from '@mui/icons-material/CheckCircle'
-import { HowItWorks, cardTitles, howItWorksData } from '@utils/texts/partner-with-us'
+import { HowItWorks, cardTitles, howItWorksData } from '@locales/en/restaurant-registration/partner-with-us'
 import { CardContent } from '@material-ui/core'
 import CloseIcon from '@mui/icons-material/Close';
 import { useState } from 'react'
 import LoginForm from '@components/login-signup/LoginForm'
 import SignUpForm from '@components/login-signup/SignUpForm';
-import Navbar from '../../components/navbar/Navbar'
+import Navbar from '@components/navbar/Navbar'
 
 const PartnerWithUs = () => {
 

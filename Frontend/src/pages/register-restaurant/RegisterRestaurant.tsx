@@ -1,148 +1,54 @@
-import { Box, Button, InputAdornment, TextField, Typography } from '@mui/material'
-import React from 'react'
-import MapElement from '@components/map/MapElement';
+import BasicDetail from '@components/register-restaurant/BasicDetail'
+import RegistrationStepper from '@components/stepper/RegistrationStepper'
+import { Box, Grid } from '@mui/material'
+import { useState } from 'react';
+import MetaDetail from '@components/register-restaurant/MetaDetail';
+import FoodDetail from '@components/register-restaurant/FoodDetail';
 
 const RegisterRestaurant = () => {
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        console.log('Submitted')
+    const [activeStep, setActiveStep] = useState(2);
+
+    const nextStep = () => {
+        setActiveStep(prevStep => prevStep + 1)
     }
 
-    const coordinatesHandler = (e: any) => {
-        const { lat, lng } = e.latlng;
-        console.log({ lat, lng })
+    const prevStep = () => {
+        setActiveStep(prevStep => prevStep - 1)
+    }
+
+    const steps = {
+        next: nextStep,
+        prev: prevStep
+    }
+
+    const stepContentHandler = (activeStep: number) => {
+        switch (activeStep) {
+            case 0: return <Grid item sm={9}>
+                <BasicDetail {...steps} />
+            </Grid>
+
+            case 1: return <Grid item sm={9}>
+                <MetaDetail {...steps} />
+            </Grid>
+
+            case 2: return <Grid item sm={9}>
+                <FoodDetail {...steps} />
+            </Grid>
+        }
     }
 
     return (
         <>
-            <Box component='form' onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                <TextField
-                    name='restaurantName'
-                    id='restaurantName'
-                    size="small"
-                    variant='outlined'
-                    placeholder="Restaurant's Name"
-                    required
-                />
-
-                <TextField
-                    name="restaurantAddress"
-                    id="restaurantAddress"
-                    size='small'
-                    variant='outlined'
-                    placeholder="Restaurant's complete address"
-                    required
-                />
-
-                <Box>
-                    <Typography>
-                        Please place the pin accurately at your outlet's location on the map.
-                    </Typography>
-                    <Typography>
-                        This will help your customers and Food Cab riders to locate your store.
-                    </Typography>
-
-                    <Box sx={{ width: "50%", height: "auto" }}>
-                        <MapElement />
-                    </Box>
-
-                    <Typography>
-                        or directly enter the co-ordinates
-                    </Typography>
-
-                    <TextField
-                        name="latitude"
-                        id="latitude"
-                        size='small'
-                        variant='outlined'
-                        placeholder='Latitude'
-                    />
-
-                    <TextField
-                        name="longitude"
-                        id="longitude"
-                        size='small'
-                        variant='outlined'
-                        placeholder='Longitude'
-                    />
-                </Box>
-
-                <Box>
-                    <Typography>
-                        Call Details
-                    </Typography>
-
-                    <Typography>
-                        Your customers will call on this number for general enquiries
-                    </Typography>
-
-                    <TextField
-                        InputProps={{
-                            startAdornment: <InputAdornment position='start'>+91</InputAdornment>
-                        }}
-                        name="restaurantPhoneNumber"
-                        id="restaurantPhoneNumber"
-                        placeholder='Mobile number at restaurant'
-                        variant='outlined'
-                        size='small'
-                        required
-                    />
-                </Box>
-
-                <Box>
-                    <Typography>
-                        Restaurant owner details
-                    </Typography>
-                    <Typography>
-                        This will be used for official communication by us.
-                    </Typography>
-
-                    <TextField
-                        InputProps={{
-                            startAdornment: <InputAdornment position='start'>+91</InputAdornment>
-                        }}
-                        name="ownerPhoneNumber"
-                        id="ownerPhoneNumber"
-                        placeholder="Owner's Mobile number"
-                        variant='outlined'
-                        size='small'
-                        required
-                    />
-
-                    <Box>
-                        <TextField
-                            type="text"
-                            name="name"
-                            id="name"
-                            size="small"
-                            variant='outlined'
-                            placeholder="Owner's Full Name"
-                            required
-                        />
-
-
-                        <TextField
-                            inputProps={{ inputMode: 'email' }}
-                            size="small"
-                            name="email"
-                            id="email"
-                            variant='outlined'
-                            placeholder="Restaurant's Email"
-                            required
-                        />
-                    </Box>
-                </Box>
-                <Button
-                    type='submit'
-                    variant='contained'
-                    sx={{ width: '100%', maxWidth: { lg: '25%' }, margin: '0 auto' }}
-                >
-                    Next
-                </Button>
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <Grid container spacing={2}>
+                    <Grid item sm={3}>
+                        <RegistrationStepper activeStep={activeStep} />
+                    </Grid>
+                    {stepContentHandler(activeStep)}
+                </Grid >
             </Box>
         </>
-
     )
 }
 

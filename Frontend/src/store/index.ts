@@ -1,10 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
-import unregisteredSlice from "@store/unregistered/unregisteredSlice";
+import { combineReducer } from "@store/combineReducer";
 
 const store = configureStore({
-    reducer: {
-        unregisteredRestaurant: unregisteredSlice.reducer
-    }
+    reducer: combineReducer
 })
 
 export default store
