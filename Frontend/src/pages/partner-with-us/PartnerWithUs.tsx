@@ -3,14 +3,15 @@ import styles from './PartnerWithUs.module.css'
 import CheckCircle from '@mui/icons-material/CheckCircle'
 import { HowItWorks, cardTitles, howItWorksData } from '@locales/en/restaurant-registration/partner-with-us'
 import { CardContent } from '@material-ui/core'
-import CloseIcon from '@mui/icons-material/Close';
+import CloseIcon from '@mui/icons-material/Close'
 import { useState } from 'react'
 import LoginForm from '@components/login-signup/LoginForm'
-import SignUpForm from '@components/login-signup/SignUpForm';
+import SignUpForm from '@components/login-signup/SignUpForm'
 import Navbar from '@components/navbar/Navbar'
+import { ThemeProvider } from '@emotion/react'
+import { registerRestaurantTheme } from '@styles/register-restaurant/register-restaurant-theme'
 
 const PartnerWithUs = () => {
-
     const [openAuthModal, setOpenAuthModal] = useState(false);
     const [showLogin, setShowLogin] = useState(true);
     const [modalTitle, setModalTitle] = useState('')
@@ -20,8 +21,8 @@ const PartnerWithUs = () => {
         <Box sx={{
             display: 'flex',
         }}>
-            <CheckCircle />
-            <Typography sx={{ marginLeft: '1rem' }}>
+            <CheckCircle className="check-mark" />
+            <Typography className='steps-primary' sx={{ marginLeft: '1rem' }}>
                 {title}
             </Typography>
         </Box>
@@ -44,7 +45,7 @@ const PartnerWithUs = () => {
     }
 
     return (
-        <>
+        <ThemeProvider theme={registerRestaurantTheme}>
             <Navbar userType='restaurant' />
 
             <div className="container">
@@ -64,6 +65,7 @@ const PartnerWithUs = () => {
                         flexDirection: { xs: 'column', md: 'row' },
                     }}>
                         <Button
+                            className='primary-btn'
                             variant='contained'
                             sx={{ marginRight: { xs: '0', md: '1rem' }, width: '25rem', padding: '1rem' }}
                             onClick={() => { signupContentHandler() }}
@@ -71,6 +73,7 @@ const PartnerWithUs = () => {
                             Register with us
                         </Button>
                         <Button
+                            className="secondary-btn"
                             variant='contained'
                             sx={{ backgroundColor: 'white', color: 'black', width: '25rem', marginTop: { xs: '1rem', md: '0' }, padding: '1rem' }}
                             onClick={() => { loginContentHandler() }}
@@ -86,35 +89,33 @@ const PartnerWithUs = () => {
                 textAlign: 'center',
                 padding: "2rem",
                 borderRadius: "15px",
+                width: '65rem',
                 maxWidth: { xs: "100%", sm: "75%" },
                 margin: "0 auto",
                 position: 'relative',
-                top: '-4rem'
+                top: '-4rem',
             }}>
-                <Typography sx={{
-                    fontSize: '1.5rem',
-                }}>
+                <Typography className='title-text'>
                     Get started with online ordering
                 </Typography>
 
-                <Typography>
+                <Typography className='title-text-secondary'>
                     Keep the following documents ready for a smooth signup
                 </Typography>
 
-                <Grid sx={{ margin: 'auto', width: '50%' }} container spacing={{ xs: 1, md: 2 }} columns={2}>
-                    {cardTitles.map((title: string, index: number) =>
-                        <Grid item key={index} xs={12} md={1}>
-                            <DocumentCardItem title={title} />
-                        </Grid>
-                    )}
-                </Grid>
+                <Box sx={{ width: '45rem', margin: '1rem auto' }}>
+                    <Grid container spacing={{ xs: 1, md: 2 }} columns={2}>
+                        {cardTitles.map((title: string, index: number) =>
+                            <Grid item key={index} xs={12} md={1}>
+                                <DocumentCardItem title={title} />
+                            </Grid>
+                        )}
+                    </Grid>
+                </Box>
             </Card >
 
             {/* How it works ************************/}
-            <Typography sx={{
-                fontSize: '2.5rem',
-                textAlign: 'center'
-            }}>
+            <Typography sx={{ textAlign: 'center' }} className='title-text'>
                 How it works?
             </Typography>
             <Box sx={{
@@ -126,13 +127,13 @@ const PartnerWithUs = () => {
                         <Card key={index} variant='outlined' sx={{ width: '100%', margin: { xs: '1rem 0', md: '1rem 1rem' }, textAlign: 'center' }}>
                             {element.sprite}
                             <CardContent>
-                                <Typography>
+                                <Typography className="steps-header">
                                     {element.step}
                                 </Typography>
-                                <Typography>
+                                <Typography className='steps-primary'>
                                     {element.title}
                                 </Typography>
-                                <Typography>
+                                <Typography className='steps-secondary'>
                                     {element.body}
                                 </Typography>
                             </CardContent>
@@ -173,7 +174,7 @@ const PartnerWithUs = () => {
                     </Typography>
                 </DialogContent>
             </Dialog>
-        </>
+        </ThemeProvider>
     )
 }
 

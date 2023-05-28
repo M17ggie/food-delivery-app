@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { foodType, cuisineType, restaurantType, daysOfWeek } from '@locales/en/restaurant-registration/meta-detail'
 import { toast } from 'react-toastify'
 import * as yup from 'yup';
+import { CardContent } from '@material-ui/core';
 
 const MetaDetail = ({ next, prev }: { next: Function, prev: Function }) => {
 
@@ -86,71 +87,73 @@ const MetaDetail = ({ next, prev }: { next: Function, prev: Function }) => {
 
     return (
         <>
-            <Typography>
+            <Typography className="details-title-text">
                 Restaurant Type & Timings
             </Typography>
             <Box component='form' onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
 
-                <Card sx={{ padding: '2rem' }}>
-                    <Typography>
-                        Food Type
-                    </Typography>
-                    <Typography>
-                        {!!errors.food && <p>{errors.food}</p>}
-                    </Typography>
-                    <Grid container>
-                        {foodType.map((type: string, index: number) =>
-                            <Grid key={index} item>
-                                <FormControlLabel
-                                    name={type}
-                                    label={type}
-                                    value={metaDetail['food'][type]}
-                                    control={<Checkbox />}
-                                    onChange={(e: React.SyntheticEvent) => { handleChange(e, 'food', type) }}
-                                />
-                            </Grid>
-                        )}
-                    </Grid>
-                    <Typography>
-                        Establishment Type
-                    </Typography>
-                    <Typography>
-                        Select most relevant category for your restaurant type
-                    </Typography>
-                    <Typography>
-                        {!!errors.restaurant && <p>{errors.restaurant}</p>}
-                    </Typography>
-
-                    <Typography>
-                        Select options which best describe your restaurant
-                    </Typography>
-                    <FormControl>
-                        <Grid container spacing={2}>
-                            {
-                                restaurantType.map((type: string, index: number) => (
-                                    <Grid key={index} item xs={6} sm={3}>
-                                        <FormControlLabel
-                                            name={type}
-                                            label={type}
-                                            value={metaDetail["restaurant"][type.toLowerCase()]}
-                                            control={<Checkbox />}
-                                            onChange={(e: React.SyntheticEvent) => { handleChange(e, 'restaurant', type) }}
-                                        />
-                                    </Grid>
-                                ))
-                            }
+                <Card>
+                    <CardContent>
+                        <Typography className='steps-primary'>
+                            Food Type
+                        </Typography>
+                        <Typography className='steps-secondary'>
+                            Select most relevant category for your restaurant type
+                        </Typography>
+                        <Typography className='error-text'>
+                            {!!errors.food && <p>{errors.food}</p>}
+                        </Typography>
+                        <Grid container>
+                            {foodType.map((type: string, index: number) =>
+                                <Grid key={index} item>
+                                    <FormControlLabel
+                                        name={type}
+                                        label={type}
+                                        value={metaDetail['food'][type]}
+                                        control={<Checkbox />}
+                                        onChange={(e: React.SyntheticEvent) => { handleChange(e, 'food', type) }}
+                                    />
+                                </Grid>
+                            )}
                         </Grid>
-                    </FormControl>
+                        <Typography className="steps-primary">
+                            Establishment Type
+                        </Typography>
+                        <Typography className='error-text'>
+                            {!!errors.restaurant && <p>{errors.restaurant}</p>}
+                        </Typography>
+
+                        <Typography className='steps-secondary'>
+                            Select options which best describe your restaurant
+                        </Typography>
+                        <FormControl>
+                            <Grid container spacing={2}>
+                                {
+                                    restaurantType.map((type: string, index: number) => (
+                                        <Grid key={index} item xs={6} sm={3}>
+                                            <FormControlLabel
+                                                name={type}
+                                                label={type}
+                                                value={metaDetail["restaurant"][type.toLowerCase()]}
+                                                control={<Checkbox />}
+                                                onChange={(e: React.SyntheticEvent) => { handleChange(e, 'restaurant', type) }}
+                                            />
+                                        </Grid>
+                                    ))
+                                }
+                            </Grid>
+                        </FormControl>
+                    </CardContent>
                 </Card>
 
                 <Card sx={{ padding: '2rem' }}>
-                    <Typography>
+                    <Typography className="details-title-text">
                         Type of cuisines
                     </Typography>
-                    <Typography>
+                    <Typography className='steps-secondary'>
                         Select options which best describe food you serve
                     </Typography>
-                    <Typography>
+                    <Typography className='error-text'>
                         {!!errors.cuisine && <p>{errors.cuisine}</p>}
                     </Typography>
 
@@ -174,13 +177,13 @@ const MetaDetail = ({ next, prev }: { next: Function, prev: Function }) => {
                 </Card>
 
                 <Card sx={{ padding: '2rem' }}>
-                    <Typography>
+                    <Typography className='details-title-text'>
                         Restaurant operational hours
                     </Typography>
-                    <Typography>
+                    <Typography className='steps-secondary'>
                         Add business hours
                     </Typography>
-                    <Typography>
+                    <Typography className="error-text">
                         {!!errors['slot-time'] && <p>{errors['slot-time']}</p>}
                         {!!errors.slot && <p>{errors.slot}</p>}
                     </Typography>
@@ -207,10 +210,10 @@ const MetaDetail = ({ next, prev }: { next: Function, prev: Function }) => {
                             </Grid>
                         ))}
                     </div>
-                    <Typography>
+                    <Typography className='steps-secondary'>
                         Mark open days
                     </Typography>
-                    <Typography>
+                    <Typography className="error-text">
                         {!!errors.daysOfWeek && <p>{errors.daysOfWeek}</p>}
                     </Typography>
 
@@ -224,20 +227,23 @@ const MetaDetail = ({ next, prev }: { next: Function, prev: Function }) => {
                         </Grid>
                     </FormControl>
                 </Card>
-                <Button
-                    onClick={() => { prev() }}
-                    variant='contained'
-                    sx={{ width: '100%', maxWidth: { lg: '25%' }, margin: '0 auto' }}
-                >
-                    Go Back
-                </Button>
-                <Button
-                    type='submit'
-                    variant='contained'
-                    sx={{ width: '100%', maxWidth: { lg: '25%' }, margin: '0 auto' }}
-                >
-                    Next
-                </Button>
+                <Box sx={{ display: "flex", md: { flexDirection: 'row' }, gap: '2' }}>
+                    <Button
+                        onClick={() => { prev() }}
+                        variant='outlined'
+                        sx={{ width: '100%', maxWidth: { lg: '25%' }, margin: '0 auto' }}
+                        className='secondary-btn'
+                    >
+                        Go Back
+                    </Button>
+                    <Button
+                        type='submit'
+                        variant='contained'
+                        sx={{ width: '100%', maxWidth: { lg: '25%' }, margin: '0 auto' }}
+                    >
+                        Next
+                    </Button>
+                </Box>
             </Box >
         </>
     )

@@ -7,6 +7,7 @@ import AddDish from '@components/food-dish/AddDish'
 import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
 import { openModal } from '@store/restaurant-register/dishReducer'
+import { CardContent } from '@material-ui/core'
 
 const FoodDetail = ({ next, prev }: { next: Function, prev: Function }) => {
 
@@ -88,59 +89,61 @@ const FoodDetail = ({ next, prev }: { next: Function, prev: Function }) => {
             </Dialog >}
 
             {/* Food Details*********************************** */}
-            <Typography>
-                Food Details
-            </Typography>
             <Box onSubmit={handleSubmit} component='form' sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                <Card sx={{ padding: '2rem' }}>
-                    <Typography>
-                        Restaurant Menu
-                    </Typography>
-                    <Typography>
-                        Add images of your restaurant's menu card
-                    </Typography>
-                    <Typography>
-                        {!!errors.menuCard && errors.menuCard}
-                    </Typography>
-                    <Input
-                        name='menuCard'
-                        inputProps={{ multiple: true }}
-                        type='file'
-                        onChange={handleChange}
-                    />
+                <Card>
+                    <CardContent>
+                        <Typography className='details-title-text'>
+                            Restaurant Menu
+                        </Typography>
+                        <Typography className='steps-secondary'>
+                            Add images of your restaurant's menu card
+                        </Typography>
+                        <Typography className='error-text'>
+                            {!!errors.menuCard && errors.menuCard}
+                        </Typography>
+                        <Input
+                            name='menuCard'
+                            inputProps={{ multiple: true }}
+                            type='file'
+                            onChange={handleChange}
+                        />
+                    </CardContent>
                 </Card>
 
-                <Card sx={{ padding: '2rem' }}>
-                    <Typography>
-                        Food Dishes
-                    </Typography>
-                    <Typography>
-                        Add food dishes that are available at your restaurant.
-                    </Typography>
-                    <Typography>
-                        Add photo images of the dishes, description of the dishes so that the user can get additional info about the dish
-                    </Typography>
+                <Card>
+                    <CardContent>
+                        <Typography className='details-title-text'>
+                            Food Dishes
+                        </Typography>
+                        <Typography className='steps-primary'>
+                            Add food dishes that are available at your restaurant.
+                        </Typography>
+                        <Typography className='steps-secondary'>
+                            Add photo images of the dishes, description of the dishes so that the user can get additional info about the dish
+                        </Typography>
 
-                    <Button
-                        variant='outlined'
-                        onClick={dishModalHandler}
-                    >
-                        Add Dish
-                    </Button>
+                        <Button
+                            variant='outlined'
+                            onClick={dishModalHandler}
+                        >
+                            Add Dish
+                        </Button>
 
-                    <Box mt={2}>
-                        {foodDetail && foodDetail.foodDishes && foodDetail.foodDishes.map((dish, index) =>
-                            <Box key={index} mb={3}>
-                                <FoodDishCard {...dish} />
-                            </Box>
-                        )}
-                    </Box>
+                        <Box mt={2}>
+                            {foodDetail && foodDetail.foodDishes && foodDetail.foodDishes.map((dish, index) =>
+                                <Box key={index} mb={3}>
+                                    <FoodDishCard {...dish} />
+                                </Box>
+                            )}
+                        </Box>
+                    </CardContent>
                 </Card>
 
                 <Button
                     onClick={() => { prev() }}
-                    variant='contained'
+                    variant='outlined'
                     sx={{ width: '100%', maxWidth: { lg: '25%' }, margin: '0 auto' }}
+                    className='secondary-btn'
                 >
                     Go Back
                 </Button>

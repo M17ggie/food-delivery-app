@@ -1,6 +1,7 @@
-import { Box, Step, StepContent, StepLabel, Stepper, Typography } from "@mui/material";
-import { useState } from "react"
+import { Step, StepContent, StepLabel, Stepper, Typography } from "@mui/material";
 import { RegisterSteps, registerSteps } from "@locales/en/restaurant-registration/registration-stepper";
+import { ThemeProvider } from "@emotion/react";
+import { stepperTheme } from "@styles/stepper/stepper"
 
 interface IRegistrationStepper {
     activeStep: number
@@ -9,22 +10,24 @@ interface IRegistrationStepper {
 const RegistrationStepper = ({ activeStep }: IRegistrationStepper) => {
 
     return (
-        <Stepper activeStep={activeStep} orientation="vertical">
-            {registerSteps.map((step: RegisterSteps, index: number) => (
-                <Step key={index}>
-                    <StepLabel>
-                        <Typography>
-                            {step.label}
-                        </Typography>
-                    </StepLabel>
-                    <StepContent>
-                        <Typography>
-                            {step.description}
-                        </Typography>
-                    </StepContent>
-                </Step>
-            ))}
-        </Stepper>
+        <ThemeProvider theme={stepperTheme}>
+            <Stepper activeStep={activeStep} orientation="vertical">
+                {registerSteps.map((step: RegisterSteps, index: number) => (
+                    <Step key={index} completed={index < activeStep}>
+                        <StepLabel>
+                            <Typography className="stepper-label">
+                                {step.label}
+                            </Typography>
+                        </StepLabel>
+                        <StepContent>
+                            <Typography className="stepper-description">
+                                {step.description}
+                            </Typography>
+                        </StepContent>
+                    </Step>
+                ))}
+            </Stepper>
+        </ThemeProvider>
     )
 }
 

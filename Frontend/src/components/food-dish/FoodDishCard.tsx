@@ -45,7 +45,7 @@ const FoodDishCard = ({ id, name, price, description, photo, foodType }: IFoodDi
             <Box position='relative'>
                 <Card>
                     <Grid container spacing={2}>
-                        <Grid item xs={3} sm={3}>
+                        <Grid item xs={12} sm={4}>
                             <CardMedia
                                 component='img'
                                 height='200'
