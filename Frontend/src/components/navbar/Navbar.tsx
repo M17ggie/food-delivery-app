@@ -42,12 +42,12 @@ const Navbar = ({ userType }: { userType: string }) => {
             </Link>
         </ListItem>
         <ListItem>
-            <Button onClick={() => { loginContentHandler() }}>
+            <Button className='primary-btn' onClick={() => { loginContentHandler() }}>
                 Login
             </Button>
         </ListItem>
         <ListItem>
-            <Button onClick={() => { signupContentHandler() }}>
+            <Button className='secondary-btn' onClick={() => { signupContentHandler() }}>
                 Signup
             </Button>
         </ListItem>

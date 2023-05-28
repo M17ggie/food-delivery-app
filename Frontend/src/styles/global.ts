@@ -3,11 +3,6 @@ import { Theme } from "@mui/material";
 import { mdBreakpoint } from "./breakpoints";
 
 export const theme: Theme = createTheme({
-    palette: {
-        primary: {
-            main: "#f50057"
-        }
-    },
     components: {
         MuiTypography: {
             styleOverrides: {
@@ -54,7 +49,7 @@ export const theme: Theme = createTheme({
                         "&:hover": {
                             backgroundColor: "#d1d1d1 ",
                         },
-                        borderColor:'#d1d1d1'
+                        borderColor: '#d1d1d1'
                     },
                     '&.other-btn': {
                         backgroundColor: "#0000ff",
