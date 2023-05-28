@@ -39,7 +39,9 @@ const RegisterRestaurant = () => {
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <Grid container spacing={2}>
                     <Grid item sm={3}>
-                        <RegistrationStepper activeStep={activeStep} />
+                        <Box sx={{ position: 'sticky', top: "1rem" }}>
+                            <RegistrationStepper activeStep={activeStep} />
+                        </Box>
                     </Grid>
                     <Grid item sm={7}>
                         {stepContentHandler(activeStep)}

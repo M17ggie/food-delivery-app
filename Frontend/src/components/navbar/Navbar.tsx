@@ -35,18 +35,20 @@ const Navbar = ({ userType }: { userType: string }) => {
         setModalTitle('Sign Up')
     }
 
-    const listItemsContent: React.ReactNode = <List sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" } }}>
-        <ListItem>
-            <Link to="/partner-with-us">
-                Add Restaurant
+    const listItemsContent: React.ReactNode = <List key={0} sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" } }}>
+        <ListItem key={1}>
+            <Link style={{ textDecoration: 'none' }} to="/partner-with-us">
+                <Typography sx={{ whiteSpace: 'nowrap', color: 'white' }}>
+                    Add Restaurant
+                </Typography>
             </Link>
         </ListItem>
-        <ListItem>
+        <ListItem key={2}>
             <Button className='primary-btn' onClick={() => { loginContentHandler() }}>
                 Login
             </Button>
         </ListItem>
-        <ListItem>
+        <ListItem key={3}>
             <Button className='secondary-btn' onClick={() => { signupContentHandler() }}>
                 Signup
             </Button>

@@ -13,7 +13,7 @@ const RegistrationStepper = ({ activeStep }: IRegistrationStepper) => {
         <ThemeProvider theme={stepperTheme}>
             <Stepper activeStep={activeStep} orientation="vertical">
                 {registerSteps.map((step: RegisterSteps, index: number) => (
-                    <Step key={index} completed={index < activeStep}>
+                    <Step key={index}>
                         <StepLabel>
                             <Typography className="stepper-label">
                                 {step.label}
