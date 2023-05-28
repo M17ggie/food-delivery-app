@@ -146,86 +146,90 @@ const MetaDetail = ({ next, prev }: { next: Function, prev: Function }) => {
                     </CardContent>
                 </Card>
 
-                <Card sx={{ padding: '2rem' }}>
-                    <Typography className="details-title-text">
-                        Type of cuisines
-                    </Typography>
-                    <Typography className='steps-secondary'>
-                        Select options which best describe food you serve
-                    </Typography>
-                    <Typography className='error-text'>
-                        {!!errors.cuisine && <p>{errors.cuisine}</p>}
-                    </Typography>
+                <Card>
+                    <CardContent>
+                        <Typography className="details-title-text">
+                            Type of cuisines
+                        </Typography>
+                        <Typography className='steps-secondary'>
+                            Select options which best describe food you serve
+                        </Typography>
+                        <Typography className='error-text'>
+                            {!!errors.cuisine && <p>{errors.cuisine}</p>}
+                        </Typography>
 
-                    <FormControl>
-                        <Grid container spacing={2}>
-                            {
-                                cuisineType.map((cuisine: string, index: number) => (
-                                    <Grid key={index} item xs={6} sm={3}>
-                                        <FormControlLabel
-                                            name={cuisine}
-                                            label={cuisine}
-                                            value={metaDetail["cuisine"][cuisine.toLowerCase()]}
-                                            control={<Checkbox />}
-                                            onChange={(e: React.SyntheticEvent) => { handleChange(e, 'cuisine', cuisine) }}
-                                        />
-                                    </Grid>
-                                ))
-                            }
-                        </Grid>
-                    </FormControl>
+                        <FormControl>
+                            <Grid container spacing={2}>
+                                {
+                                    cuisineType.map((cuisine: string, index: number) => (
+                                        <Grid key={index} item xs={6} sm={3}>
+                                            <FormControlLabel
+                                                name={cuisine}
+                                                label={cuisine}
+                                                value={metaDetail["cuisine"][cuisine.toLowerCase()]}
+                                                control={<Checkbox />}
+                                                onChange={(e: React.SyntheticEvent) => { handleChange(e, 'cuisine', cuisine) }}
+                                            />
+                                        </Grid>
+                                    ))
+                                }
+                            </Grid>
+                        </FormControl>
+                    </CardContent>
                 </Card>
 
-                <Card sx={{ padding: '2rem' }}>
-                    <Typography className='details-title-text'>
-                        Restaurant operational hours
-                    </Typography>
-                    <Typography className='steps-secondary'>
-                        Add business hours
-                    </Typography>
-                    <Typography className="error-text">
-                        {!!errors['slot-time'] && <p>{errors['slot-time']}</p>}
-                        {!!errors.slot && <p>{errors.slot}</p>}
-                    </Typography>
+                <Card>
+                    <CardContent>
+                        <Typography className='details-title-text'>
+                            Restaurant operational hours
+                        </Typography>
+                        <Typography className='steps-secondary'>
+                            Add business hours
+                        </Typography>
+                        <Typography className="error-text">
+                            {!!errors['slot-time'] && <p>{errors['slot-time']}</p>}
+                            {!!errors.slot && <p>{errors.slot}</p>}
+                        </Typography>
 
-                    <div>
-                        {slots.map((slot, index) => (
-                            <Grid container key={index}>
-                                <Grid item xs={2}>
-                                    <input type='time' value={slot.from} onChange={(e: React.ChangeEvent<HTMLInputElement>) => { slotTimeHandler(e, index, 'from') }} />
+                        <div>
+                            {slots.map((slot, index) => (
+                                <Grid container key={index}>
+                                    <Grid item xs={2}>
+                                        <input type='time' value={slot.from} onChange={(e: React.ChangeEvent<HTMLInputElement>) => { slotTimeHandler(e, index, 'from') }} />
+                                    </Grid>
+                                    <Grid item xs={2}>
+                                        <input type='time' value={slot.to} onChange={(e: React.ChangeEvent<HTMLInputElement>) => { slotTimeHandler(e, index, 'to') }} />
+                                    </Grid>
+                                    <Grid item>
+                                        <button onClick={(e: React.MouseEvent) => { e.preventDefault(); addSlot() }}>
+                                            Add slot
+                                        </button>
+                                    </Grid>
+                                    {slots.length > 1 && index > 0 && <Grid item>
+                                        <button onClick={(e: React.MouseEvent) => { e.preventDefault(); removeSlot(index) }}>
+                                            Remove slot
+                                        </button>
+                                    </Grid>}
                                 </Grid>
-                                <Grid item xs={2}>
-                                    <input type='time' value={slot.to} onChange={(e: React.ChangeEvent<HTMLInputElement>) => { slotTimeHandler(e, index, 'to') }} />
-                                </Grid>
-                                <Grid item>
-                                    <button onClick={(e: React.MouseEvent) => { e.preventDefault(); addSlot() }}>
-                                        Add slot
-                                    </button>
-                                </Grid>
-                                {slots.length > 1 && index > 0 && <Grid item>
-                                    <button onClick={(e: React.MouseEvent) => { e.preventDefault(); removeSlot(index) }}>
-                                        Remove slot
-                                    </button>
-                                </Grid>}
+                            ))}
+                        </div>
+                        <Typography className='steps-secondary'>
+                            Mark open days
+                        </Typography>
+                        <Typography className="error-text">
+                            {!!errors.daysOfWeek && <p>{errors.daysOfWeek}</p>}
+                        </Typography>
+
+                        <FormControl>
+                            <Grid container spacing={2}>
+                                {daysOfWeek.map((day: string) =>
+                                    < Grid item xs={6} sm={3}>
+                                        <FormControlLabel label={day} control={<Checkbox />} onChange={(e: React.SyntheticEvent) => handleChange(e, 'daysOfWeek', day)} />
+                                    </Grid>
+                                )}
                             </Grid>
-                        ))}
-                    </div>
-                    <Typography className='steps-secondary'>
-                        Mark open days
-                    </Typography>
-                    <Typography className="error-text">
-                        {!!errors.daysOfWeek && <p>{errors.daysOfWeek}</p>}
-                    </Typography>
-
-                    <FormControl>
-                        <Grid container spacing={2}>
-                            {daysOfWeek.map((day: string) =>
-                                < Grid item xs={6} sm={3}>
-                                    <FormControlLabel label={day} control={<Checkbox />} onChange={(e: React.SyntheticEvent) => handleChange(e, 'daysOfWeek', day)} />
-                                </Grid>
-                            )}
-                        </Grid>
-                    </FormControl>
+                        </FormControl>
+                    </CardContent>
                 </Card>
                 <Box sx={{ display: "flex", md: { flexDirection: 'row' }, gap: '2' }}>
                     <Button

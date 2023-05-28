@@ -1,9 +1,9 @@
-import { Box, Button, CardContent, Grid, InputAdornment, TextField, Typography } from '@mui/material'
+import { Box, Button, Grid, InputAdornment, TextField, Typography, Card } from '@mui/material'
 import React, { useState } from 'react'
 import MapElement from '@components/map/MapElement';
 import { IBasicDetails } from '@utils/interfaces/restaurant-registration/RestaurantRegister';
 import * as yup from 'yup'
-import { Card, Input } from '@material-ui/core';
+import { CardContent, Input } from '@material-ui/core';
 
 const BasicDetail = ({ next, prev }: { next: Function, prev: Function }) => {
 
@@ -380,7 +380,7 @@ const BasicDetail = ({ next, prev }: { next: Function, prev: Function }) => {
                 <Button
                     type='submit'
                     variant='contained'
-                    sx={{ width: '50%', maxWidth: { lg: '25%' }, marginLeft:'auto',marginRight: '0' }}
+                    sx={{ width: '50%', maxWidth: { lg: '25%' }, marginLeft: 'auto', marginRight: '0' }}
                 >
                     Next
                 </Button>
