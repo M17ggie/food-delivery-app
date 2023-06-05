@@ -4,11 +4,17 @@ import MapElement from '@components/map/MapElement';
 import { IBasicDetails } from '@utils/interfaces/restaurant-registration/RestaurantRegister';
 import * as yup from 'yup'
 import { CardContent, Input } from '@material-ui/core';
+import { useDispatch } from 'react-redux';
+import { addRestaurantDetails } from '@store/restaurant-register/restaurant-details';
+import { useSelector } from 'react-redux';
+import { fileSchema } from '@utils/validation/validation';
 
 const BasicDetail = ({ next, prev }: { next: Function, prev: Function }) => {
 
+    const dispatch = useDispatch();
+    const storedBasicDetail = useSelector((state: any) => state.restaurantDetails.basicDetail)
     const [isLoading, setIsLoading] = useState(false);
-    const [basicDetails, setBasicDetails] = useState<IBasicDetails>({
+    const [basicDetails, setBasicDetails] = useState<IBasicDetails>(storedBasicDetail ?? {
         restaurantName: '',
         restaurantAddress: '',
         restaurantPhoneNumber: null,
@@ -22,8 +28,6 @@ const BasicDetail = ({ next, prev }: { next: Function, prev: Function }) => {
         blankCheque: null
     });
     const [errors, setErrors] = useState<any>({});
-
-    const fileSchema = yup.mixed().required('Please upload the image').test('file-size', 'File size must be less than 1MB', (value: any) => value && value.size <= 1024 * 1024).test('file-type', 'Only JPEG image is allowed', (value: any) => value && value.type === 'image/jpeg')
 
     const schema = yup.object().shape({
         restaurantName: yup.string().required('Please enter restaurant\'s name').max(30, 'Name should not exceed 50 characters'),
@@ -54,6 +58,16 @@ const BasicDetail = ({ next, prev }: { next: Function, prev: Function }) => {
                     [name]: value.trim()
                 }
             })
+            dispatch(addRestaurantDetails({
+                type: "basicDetail",
+                details: {
+                    ...basicDetails,
+                    location: {
+                        ...basicDetails.location,
+                        [name]: value.trim()
+                    }
+                }
+            }))
         }
         else if (files && files.length > 0) {
             setBasicDetails({
@@ -66,6 +80,13 @@ const BasicDetail = ({ next, prev }: { next: Function, prev: Function }) => {
                 ...basicDetails,
                 [name]: value
             })
+            dispatch(addRestaurantDetails({
+                type: "basicDetail",
+                details: {
+                    ...basicDetails,
+                    [name]: value
+                }
+            }))
         }
     }
 
@@ -77,6 +98,16 @@ const BasicDetail = ({ next, prev }: { next: Function, prev: Function }) => {
                 longitude: longitude
             }
         })
+        dispatch(addRestaurantDetails({
+            type: "basicDetail",
+            details: {
+                ...basicDetails,
+                location: {
+                    latitude: latitude,
+                    longitude: longitude
+                }
+            }
+        }))
     }
 
     const mapProps = {
@@ -94,7 +125,6 @@ const BasicDetail = ({ next, prev }: { next: Function, prev: Function }) => {
         try {
             await schema.validate(basicDetails, { abortEarly: false });
             setErrors({});
-            console.log(basicDetails)
             next();
         } catch (err: unknown) {
             if (err instanceof yup.ValidationError) {
@@ -110,9 +140,49 @@ const BasicDetail = ({ next, prev }: { next: Function, prev: Function }) => {
         setIsLoading(false)
     }
 
+    const defaultFormValueHandler = (e: React.MouseEvent) => {
+        e.preventDefault();
+        setBasicDetails({
+            ...basicDetails,
+            restaurantName: "Vijay Chinese Corner",
+            restaurantAddress: " agashi cross naka road, Agashi Rd, Near agashi machchi market, Agashi, Virar West, Virar, ",
+            restaurantPhoneNumber: 9850053959,
+            restaurantEmail: "vijay.restaurant@gmail.com",
+            location: {
+                latitude: 19.460387665611307,
+                longitude: 72.77219594507703
+            },
+            ownerPhoneNumber: 9850053959,
+            ownerName: "Vijay Mhatre",
+            bankAccountNumber: 12345667890,
+            ifscCode: "SBIN0011513",
+        });
+        dispatch(addRestaurantDetails({
+            type: 'basicDetail',
+            details: {
+                ...basicDetails,
+                restaurantName: "Vijay Chinese Corner",
+                restaurantAddress: " agashi cross naka road, Agashi Rd, Near agashi machchi market, Agashi, Virar West, Virar, ",
+                restaurantPhoneNumber: 9850053959,
+                restaurantEmail: "vijay.restaurant@gmail.com",
+                location: {
+                    latitude: 19.460387665611307,
+                    longitude: 72.77219594507703
+                },
+                ownerPhoneNumber: 9850053959,
+                ownerName: "Vijay Mhatre",
+                bankAccountNumber: 12345667890,
+                ifscCode: "SBIN0011513",
+            }
+        }));
+    }
+
     return (
         <>
             <Box component='form' onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+                <Button onClick={defaultFormValueHandler}>
+                    Fill This Shit!
+                </Button>
                 <Card>
                     <CardContent>
                         <Typography className="details-title-text">

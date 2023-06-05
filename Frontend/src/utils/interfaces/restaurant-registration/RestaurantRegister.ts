@@ -20,8 +20,6 @@ export interface IMetaDetail {
     restaurant: { [key: string]: false },
     food: { [key: string]: false },
     daysOfWeek: { [key: string]: false },
-    next: Function,
-    prev: Function,
     [key: string]: any
 }
 

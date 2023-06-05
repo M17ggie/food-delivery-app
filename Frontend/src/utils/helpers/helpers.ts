@@ -25,3 +25,8 @@ export const randomId = () => {
     const randomNum = Math.floor(max * Math.random()) + min;
     return randomNum
 }
+
+//convert label to keys
+export const lowerCaseConverter = (key: string) => {
+    return key.split(" ").join("").toLowerCase()
+}

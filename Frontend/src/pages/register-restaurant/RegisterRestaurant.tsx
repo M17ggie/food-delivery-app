@@ -36,9 +36,14 @@ const RegisterRestaurant = () => {
 
     return (
         <ThemeProvider theme={registerRestaurantTheme}>
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <Box sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                minHeight: '100vh'
+            }}>
                 <Grid container spacing={2}>
-                    <Grid item sm={3}>
+                    <Grid item sm={2}>
                         <Box sx={{ position: 'sticky', top: "1rem" }}>
                             <RegistrationStepper activeStep={activeStep} />
                         </Box>

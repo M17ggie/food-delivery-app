@@ -4,16 +4,23 @@ import { foodType, cuisineType, restaurantType, daysOfWeek } from '@locales/en/r
 import { toast } from 'react-toastify'
 import * as yup from 'yup';
 import { CardContent } from '@material-ui/core';
+import { useDispatch } from 'react-redux';
+import { addRestaurantDetails } from '@store/restaurant-register/restaurant-details';
+import { useSelector } from 'react-redux';
+import { lowerCaseConverter } from '@utils/helpers/helpers';
 
 const MetaDetail = ({ next, prev }: { next: Function, prev: Function }) => {
 
+    const dispatch = useDispatch();
+    const storedMetaDetail = useSelector((state: any) => state.restaurantDetails.metaDetail);
     const [isLoading, setIsLoading] = useState(false)
-    const [slots, setSlots] = useState([{ from: "", to: "" }]);
-    const [metaDetail, setMetaDetail] = useState<any>({
+    const [slots, setSlots] = useState(storedMetaDetail.slots ?? [{ from: "", to: "" }]);
+    const [metaDetail, setMetaDetail] = useState<any>(storedMetaDetail ?? {
         food: foodType.reduce((acc, curr) => ({ ...acc, [curr.toLowerCase().split(" ").join("")]: false }), {}),
         restaurant: restaurantType.reduce((acc, curr) => ({ ...acc, [curr.toLowerCase().split(" ").join("")]: false }), {}),
         cuisine: cuisineType.reduce((acc, curr) => ({ ...acc, [curr.toLowerCase().split(" ").join("")]: false }), {}),
-        daysOfWeek: daysOfWeek.reduce((acc, curr) => ({ ...acc, [curr.toLowerCase().split(" ").join("")]: false }), {})
+        daysOfWeek: daysOfWeek.reduce((acc, curr) => ({ ...acc, [curr.toLowerCase().split(" ").join("")]: false }), {}),
+        slots: slots
     });
     const [errors, setErrors] = useState<any>({});
 
@@ -33,7 +40,13 @@ const MetaDetail = ({ next, prev }: { next: Function, prev: Function }) => {
 
     const handleChange = (e: React.SyntheticEvent, dataType: string, field: string) => {
         const target = e.target as HTMLInputElement
-        setMetaDetail({ ...metaDetail, [dataType]: { ...metaDetail[dataType], [field.toLowerCase().split(" ").join("")]: target.checked } })
+        setMetaDetail({ ...metaDetail, [dataType]: { ...metaDetail[dataType], [lowerCaseConverter(field)]: target.checked } });
+        dispatch(addRestaurantDetails({
+            type: "metaDetail",
+            details: {
+                ...metaDetail, [dataType]: { ...metaDetail[dataType], [lowerCaseConverter(field)]: target.checked }
+            }
+        }))
     }
 
     const slotTimeHandler = (e: React.ChangeEvent<HTMLInputElement>, index: number, field: 'from' | 'to') => {
@@ -61,7 +74,10 @@ const MetaDetail = ({ next, prev }: { next: Function, prev: Function }) => {
         try {
             await schema.validate({ ...metaDetail, slots }, { abortEarly: false });
             setErrors({})
-
+            dispatch(addRestaurantDetails({
+                type: 'metaDetail',
+                details: { ...metaDetail, slots }
+            }))
             next();
         } catch (err: unknown) {
             if (err instanceof yup.ValidationError) {
@@ -85,8 +101,61 @@ const MetaDetail = ({ next, prev }: { next: Function, prev: Function }) => {
         setIsLoading(false)
     }
 
+    const defaultFormValueHandler = (e: React.MouseEvent) => {
+        e.preventDefault();
+        setMetaDetail({
+            "food": {
+                "veg": true,
+                "nonveg": true
+            },
+            "restaurant": {
+                "bakery": false,
+                "beverageshop": false,
+                "casualdining": true,
+                "dhaba": false,
+                "dessertparlour": false,
+                "foodcourt": false,
+                "quickbites": false
+            },
+            "cuisine": {
+                "beverages": false,
+                "desserts": false,
+                "biryani": false,
+                "chinese": true,
+                "continental": false,
+                "malwani": false,
+                "northindian": false,
+                "pasta": false,
+                "pizza": false,
+                "rolls": false,
+                "roastchicken": true,
+                "sandwich": false,
+                "seafood": false,
+                "streetfood": false,
+                "southindian": false
+            },
+            "daysOfWeek": {
+                "monday": true,
+                "tuesday": true,
+                "wednesday": true,
+                "thursday": true,
+                "friday": true,
+                "saturday": true,
+                "sunday": true
+            },
+            "slots": [
+                {
+
+                }
+            ]
+        })
+    }
+
     return (
         <>
+            <Button onClick={defaultFormValueHandler}>
+                Fill this!
+            </Button>
             <Typography className="details-title-text">
                 Restaurant Type & Timings
             </Typography>
@@ -110,7 +179,7 @@ const MetaDetail = ({ next, prev }: { next: Function, prev: Function }) => {
                                         name={type}
                                         label={type}
                                         value={metaDetail['food'][type]}
-                                        control={<Checkbox />}
+                                        control={<Checkbox checked={metaDetail['food'][lowerCaseConverter(type)]} />}
                                         onChange={(e: React.SyntheticEvent) => { handleChange(e, 'food', type) }}
                                     />
                                 </Grid>
@@ -134,8 +203,8 @@ const MetaDetail = ({ next, prev }: { next: Function, prev: Function }) => {
                                             <FormControlLabel
                                                 name={type}
                                                 label={type}
-                                                value={metaDetail["restaurant"][type.toLowerCase()]}
-                                                control={<Checkbox />}
+                                                value={metaDetail["restaurant"][lowerCaseConverter(type)]}
+                                                control={<Checkbox checked={metaDetail["restaurant"][lowerCaseConverter(type)]} />}
                                                 onChange={(e: React.SyntheticEvent) => { handleChange(e, 'restaurant', type) }}
                                             />
                                         </Grid>
@@ -166,8 +235,8 @@ const MetaDetail = ({ next, prev }: { next: Function, prev: Function }) => {
                                             <FormControlLabel
                                                 name={cuisine}
                                                 label={cuisine}
-                                                value={metaDetail["cuisine"][cuisine.toLowerCase()]}
-                                                control={<Checkbox />}
+                                                value={metaDetail["cuisine"][lowerCaseConverter(cuisine)]}
+                                                control={<Checkbox checked={metaDetail["cuisine"][lowerCaseConverter(cuisine)]} />}
                                                 onChange={(e: React.SyntheticEvent) => { handleChange(e, 'cuisine', cuisine) }}
                                             />
                                         </Grid>
@@ -192,7 +261,7 @@ const MetaDetail = ({ next, prev }: { next: Function, prev: Function }) => {
                         </Typography>
 
                         <div>
-                            {slots.map((slot, index) => (
+                            {slots.map((slot: any, index: number) => (
                                 <Grid container key={index}>
                                     <Grid item xs={2}>
                                         <input type='time' value={slot.from} onChange={(e: React.ChangeEvent<HTMLInputElement>) => { slotTimeHandler(e, index, 'from') }} />
@@ -224,7 +293,7 @@ const MetaDetail = ({ next, prev }: { next: Function, prev: Function }) => {
                             <Grid container spacing={2}>
                                 {daysOfWeek.map((day: string) =>
                                     < Grid item xs={6} sm={3}>
-                                        <FormControlLabel label={day} control={<Checkbox />} onChange={(e: React.SyntheticEvent) => handleChange(e, 'daysOfWeek', day)} />
+                                        <FormControlLabel label={day} control={<Checkbox checked={metaDetail["daysOfWeek"][lowerCaseConverter(day)]} />} onChange={(e: React.SyntheticEvent) => handleChange(e, 'daysOfWeek', day)} />
                                     </Grid>
                                 )}
                             </Grid>

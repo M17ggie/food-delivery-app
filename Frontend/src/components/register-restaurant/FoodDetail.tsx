@@ -8,11 +8,14 @@ import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
 import { openModal } from '@store/restaurant-register/dishReducer'
 import { CardContent } from '@material-ui/core'
+import { addRestaurantDetails } from '@store/restaurant-register/restaurant-details'
+import { fileSchema } from '@utils/validation/validation'
 
 const FoodDetail = ({ next, prev }: { next: Function, prev: Function }) => {
 
     const dispatch = useDispatch();
     const { dishes, isModalOpen: showAddDishModal } = useSelector((state: any) => state.dish);
+    const { metaDetail, basicDetail } = useSelector((state: any) => state.restaurantDetails)
     const [foodDetail, setFoodDetail] = useState<IFoodDetail>({
         menuCard: null,
         foodDishes: dishes
@@ -22,12 +25,19 @@ const FoodDetail = ({ next, prev }: { next: Function, prev: Function }) => {
             ...foodDetail,
             foodDishes: dishes
         })
+        dispatch(addRestaurantDetails({
+            type: "foodDetail",
+            details: {
+                ...foodDetail,
+                foodDishes: dishes
+            }
+        }))
     }, [dishes]);
     const [errors, setErrors] = useState<any>({});
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value, files } = e.target;
+        const { name, files } = e.target;
         if (files && files.length > 0) {
-            setFoodDetail({ ...foodDetail, [name]: files })
+            setFoodDetail({ ...foodDetail, [name]: { file: files[0] } })
         }
     }
 
@@ -35,27 +45,42 @@ const FoodDetail = ({ next, prev }: { next: Function, prev: Function }) => {
         dispatch(openModal())
     }
 
-    const fileSchema = yup.mixed().test('file-size', 'File size must be less than 1MB', (value: any) => value && value.size <= 1024 * 1024).test('file-type', 'Only JPEG image is allowed', (value: any) => value && value.type === 'image/jpeg')
-    const imageSchema = yup.object().shape({
-        file: fileSchema
-    })
-
     const schema = yup.object().shape({
-        menuCard: imageSchema.required('Please add restaurant menu')
-    })
+        menuCard: yup
+            .mixed()
+            .required('Please upload the image')
+            .test('file-size', 'File size must be less than 1MB', (value: any) => {
+                if (value && value.file) {
+                    return value.file.size <= 1024 * 1024;
+                }
+                return false;
+            })
+            .test('file-type', 'Only JPEG image is allowed', (value: any) => {
+                if (value && value.file) {
+                    return value.file.type === 'image/jpeg';
+                }
+                return false;
+            })
+    });
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         try {
             await schema.validate(foodDetail, { abortEarly: false });
-            setErrors({})
+            setErrors({});
+            console.log({
+                basicDetail,
+                metaDetail,
+                foodDetail
+            })
         } catch (err: unknown) {
             if (err instanceof yup.ValidationError) {
                 const newErrors: { [key: string]: string } = {};
                 err.inner.forEach((error: any) => {
                     newErrors[error.path] = error.message
                 })
+                console.log(newErrors)
                 setErrors(newErrors)
             } else {
                 console.log('This is beyond my scope');
@@ -139,21 +164,23 @@ const FoodDetail = ({ next, prev }: { next: Function, prev: Function }) => {
                     </CardContent>
                 </Card>
 
-                <Button
-                    onClick={() => { prev() }}
-                    variant='outlined'
-                    sx={{ width: '100%', maxWidth: { lg: '25%' }, margin: '0 auto' }}
-                    className='secondary-btn'
-                >
-                    Go Back
-                </Button>
-                <Button
-                    type='submit'
-                    variant='contained'
-                    sx={{ width: '100%', maxWidth: { lg: '25%' }, margin: '0 auto' }}
-                >
-                    Register
-                </Button>
+                <Box sx={{ display: "flex", md: { flexDirection: 'row' }, gap: '2' }}>
+                    <Button
+                        onClick={() => { prev() }}
+                        variant='outlined'
+                        sx={{ width: '100%', maxWidth: { lg: '25%' }, margin: '0 auto' }}
+                        className='secondary-btn'
+                    >
+                        Go Back
+                    </Button>
+                    <Button
+                        type='submit'
+                        variant='contained'
+                        sx={{ width: '100%', maxWidth: { lg: '25%' }, margin: '0 auto' }}
+                    >
+                        Register
+                    </Button>
+                </Box>
             </Box>
         </>
     )
