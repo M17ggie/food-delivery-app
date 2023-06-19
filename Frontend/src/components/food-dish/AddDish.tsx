@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { IFoodDish } from '../../utils/interfaces/restaurant-registration/RestaurantRegister'
 import { Box, Button, CardContent, DialogTitle, TextField, IconButton, MenuItem } from '@mui/material'
 import * as yup from 'yup'
@@ -21,7 +21,7 @@ const AddDish = () => {
         id: editDishState.id || id,
         name: editDishState.name || '',
         description: editDishState.description || '',
-        photo: editDishState.photo || '/assets/dish-fallback.jpg',
+        photo: editDishState.photo || '',
         price: editDishState.price || null,
         foodType: editDishState.foodType || '',
         dishType: editDishState.dishType || ''
@@ -89,6 +89,8 @@ const AddDish = () => {
         }
     }
 
+    console.log("SEE THIS!!!", imageFile)
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
 
@@ -139,6 +141,13 @@ const AddDish = () => {
         }
     }
 
+    useEffect(() => {
+        const img = imageRef.current;
+        if (img) {
+            img.src = imageFile || '/assets/dish-fallback.jpg'; // Update the src attribute of the img tag with the imageFile state
+        }
+    }, [imageFile]);
+
     return (
         <>
             <DialogTitle>
@@ -152,7 +161,7 @@ const AddDish = () => {
 
                     <Box>
                         <label htmlFor='imageInput'>
-                            <img ref={imageRef} src={imageFile || '/assets/dish-fallback.jpg'} style={{ maxWidth: '15rem' }} />
+                            <img ref={imageRef} src={imageFile ? imageFile : '/assets/dish-fallback.jpg'} style={{ maxWidth: '15rem' }} />
                         </label>
                         <Input
                             id='imageInput'

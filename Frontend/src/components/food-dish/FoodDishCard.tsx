@@ -20,6 +20,8 @@ const FoodDishCard = ({ id, name, price, description, photo, foodType }: IFoodDi
         dispatch(selectDishToEdit({ id, name, price, description, photo, foodType, edit: true }))
     }
 
+    console.log("PHOTO", photo)
+
     return (
         <>
             {isModalOpen && <Dialog
@@ -49,7 +51,7 @@ const FoodDishCard = ({ id, name, price, description, photo, foodType }: IFoodDi
                             <CardMedia
                                 component='img'
                                 height='200'
-                            // image={photo}
+                                image={photo || '/assets/dish-fallback.jpg'}
                             />
                         </Grid>
 

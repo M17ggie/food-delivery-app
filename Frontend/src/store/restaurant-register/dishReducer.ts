@@ -26,6 +26,7 @@ const dishSlice = createSlice({
         },
         closeModal: (state) => {
             state.isModalOpen = false;
+            state.editDish = {};
         },
         addDish: (state, action: PayloadAction<IFoodDish>) => {
             const newDishes = [...state.dishes, action.payload];
