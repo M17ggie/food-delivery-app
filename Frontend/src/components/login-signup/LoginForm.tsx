@@ -6,7 +6,7 @@ import axios, { AxiosResponse, AxiosError } from 'axios';
 import AuthButton from './AuthButton';
 const BASE_URL = import.meta.env.VITE_APP_BASE_URL
 
-const LoginForm = ({ close }: { close: Function }) => {
+const LoginForm = ({ close, userType }: { close: Function, userType: string }) => {
 
     const [loginData, setLoginData] = useState({
         email: "",
@@ -34,7 +34,7 @@ const LoginForm = ({ close }: { close: Function }) => {
         try {
             await schema.validate(loginData, { abortEarly: false });
             setErrors({});
-            axios.post(`${BASE_URL}/api/v1/auth/login`, {
+            axios.post(`${BASE_URL}/api/v1/auth/${userType}/login`, {
                 ...loginData
             }).then((res: AxiosResponse) => {
                 close();

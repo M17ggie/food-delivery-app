@@ -20,6 +20,9 @@
       "@components/*": ["src/components/*"],
       "@styles/*": ["src/styles/*"],
       "@utils/*": ["src/utils/*"],
+      "@store/*": ["src/store/*"],
+      "@routes/*": ["src/routes/*"],
+      "@locales/*": ["src/locales/*"],
       "@pages/*": ["src/pages/*"]
     }
   },

@@ -6,10 +6,12 @@ import { Link } from 'react-router-dom';
 import Drawer from '@material-ui/core/Drawer';
 import { useState } from 'react';
 import MenuIcon from '@mui/icons-material/Menu';
-import { Button, IconButton, Box } from '@mui/material';
-import AuthModal from '@components/login-signup/AuthModal';
+import { Button, IconButton, Box, Dialog, DialogTitle, DialogContent, Typography } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import LoginForm from '@components/login-signup/LoginForm';
+import SignUpForm from '@components/login-signup/SignUpForm';
 
-const Navbar = () => {
+const Navbar = ({ userType }: { userType: string }) => {
 
     // to open/close drawer************
     const [openDrawer, setOpenDrawer] = useState(false);
@@ -33,19 +35,21 @@ const Navbar = () => {
         setModalTitle('Sign Up')
     }
 
-    const listItemsContent: React.ReactNode = <List sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" } }}>
-        <ListItem>
-            <Link to="/partner-with-us">
-                Add Restaurant
+    const listItemsContent: React.ReactNode = <List key={0} sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" } }}>
+        <ListItem key={1}>
+            <Link style={{ textDecoration: 'none' }} to="/partner-with-us">
+                <Typography sx={{ whiteSpace: 'nowrap', color: 'white' }}>
+                    Add Restaurant
+                </Typography>
             </Link>
         </ListItem>
-        <ListItem>
-            <Button onClick={() => { loginContentHandler() }}>
+        <ListItem key={2}>
+            <Button className='primary-btn' onClick={() => { loginContentHandler() }}>
                 Login
             </Button>
         </ListItem>
-        <ListItem>
-            <Button onClick={() => { signupContentHandler() }}>
+        <ListItem key={3}>
+            <Button className='secondary-btn' onClick={() => { signupContentHandler() }}>
                 Signup
             </Button>
         </ListItem>
@@ -75,14 +79,38 @@ const Navbar = () => {
                 </Toolbar>
             </AppBar>
 
-            <AuthModal
-                openAuthModal={openAuthModal}
-                authModalHandler={authModalHandler}
-                showLogin={showLogin}
-                modalTitle={modalTitle}
-                loginContentHandler={loginContentHandler}
-                signupContentHandler={signupContentHandler}
-            />
+            {/* auth modal******************* */}
+            <Dialog sx={{
+                '& .MuiDialog-paper': {
+                    maxWidth: '90%',
+                    width: { xs: '100%', sm: '40%' },
+                    margin: { xs: 0, sm: '5vh auto 0' },
+                },
+                '& .MuiDialogTitle-root': {
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                },
+                '& .MuiDialogTitle-root > .MuiIconButton-root': {
+                    marginRight: '-12px',
+                    marginTop: '-12px',
+                },
+            }} open={openAuthModal} onClose={() => { authModalHandler() }}>
+                <DialogTitle style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    {modalTitle}
+                    <IconButton onClick={() => { authModalHandler() }}>
+                        <CloseIcon />
+                    </IconButton>
+                </DialogTitle>
+                <DialogContent>
+                    {showLogin && <LoginForm userType={userType} close={() => { authModalHandler() }} />}
+                    {!showLogin && <SignUpForm userType={userType} login={() => { loginContentHandler() }} />}
+                    <Typography sx={{ marginTop: '0.25rem' }}>
+                        {showLogin && ['Not a member? ', <span onClick={() => { signupContentHandler() }}>Sign up</span>]}
+                        {!showLogin && ['Already a member? ', <span onClick={() => { loginContentHandler() }}>Log in</span>]}
+                    </Typography>
+                </DialogContent>
+            </Dialog>
         </>
     )
 }

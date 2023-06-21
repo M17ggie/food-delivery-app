@@ -7,7 +7,7 @@ const Home = () => {
     return (
         <>
             <PageTitle title="Food Cab | Hungry? Let us handle it" />
-            <Navbar />
+            <Navbar userType='user' />
             <SearchBar />
         </>
     )

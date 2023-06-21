@@ -1,23 +1,41 @@
 import { NextFunction, Request, Response } from "express";
 import { asyncHandler } from '../../middleware/async'
 import { ErrorResponse } from "../../utils/errorResponse";
-import User, { IUser } from '../../models/User'
+import User, { IUser } from '../../models/User';
+import Restaurant, { IRestaurant } from "../../models/Restaurant";
 
-//User authentication
-
-export const loginUserHandler = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    const { password, email } = req.body;
-
-    //credentials should not be empty
+// validate credentials***************************
+const validateCredentials = (email: string, password: string, next: NextFunction) => {
     if (!email || !password) {
         return next(new ErrorResponse(`Email/Password hasn't been provided`, 400))
     }
+}
 
-    //check id user exists
+// register user**************************
+const registerUser = async (userModel: any, email: string, password: string, name: string) => {
+    const user = await userModel.create({
+        name,
+        email,
+        password
+    });
+
+    const { token, options } = sendTokenResponse(user);
+    return { token, options }
+}
+
+//User authentication****************************
+
+export const userLoginHandler = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    const { password, email } = req.body;
+
+    //credentials should not be empty
+    validateCredentials(email, password, next)
+
+    //check if user exists
     const user = await User.findOne({ email }).select(['password']);
 
     if (!user) {
-        return next(new ErrorResponse('User does not exist. Please register to continue.', 400))
+        return next(new ErrorResponse('User does not exist. Please register to continue.', 404))
     }
 
     const isMatch = await user.matchedPasswords(password);
@@ -26,31 +44,51 @@ export const loginUserHandler = asyncHandler(async (req: Request, res: Response,
     }
 
     //send token if all goes well
-    sendTokenResponse(user, 200, res);
+    const { token, options } = sendTokenResponse(user);
+
+    res.cookie('token', token, options).send('Logged In')
 })
 
-export const registerUserHandler = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-    const { name, password, email, role } = req.body;
+export const userRegisterHandler = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    const { name, password, email } = req.body;
 
-    const user = await User.create({
-        name,
-        password,
-        email,
-        role
-    })
-
-    //send cookie
-    sendTokenResponse(user, 200, res);
+    const { token, options } = await registerUser(User, email, password, name);
+    res.cookie('token', token, options).send('Registered')
 });
 
+// Restaurant authentication**************************
+
+export const restaurantLoginHandler = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    const { email, password } = req.body;
+
+    validateCredentials(email, password, next);
+
+    const restaurantUser = await Restaurant.findOne({ email }).select(["password"]);
+
+    if (!restaurantUser) {
+        return next(new ErrorResponse(`User does not exist. Please register to continue.`, 404))
+    }
+
+    const { token, options } = sendTokenResponse(restaurantUser)
+
+    res.cookie('token', token, options).send('Logged In!')
+})
+
+export const restaurantRegisterHandler = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    const { email, password, name } = req.body;
+
+    const { token, options } = await registerUser(Restaurant, email, password, name);
+
+    await registerUser(User, email, password, name);
+    res.cookie('token', token, options).send('Registered Restaurant')
+})
+
+
 // cookie maker***********
-const sendTokenResponse = (user: IUser, statusCode: number, res: Response) => {
+const sendTokenResponse = (user: IUser | IRestaurant) => {
     const token = user.getSignedJWTToken();
-    const expiryTime = new Date().getTime() + (60 * 60 * 1000);
-    const expiryDate = new Date(expiryTime).toLocaleString('en-US', { timeZone: 'Asia/Kolkata' });
     const options = {
-        expires: new Date(expiryDate),
         httpOnly: true
     }
-    res.status(statusCode).cookie('token', token, options).send('Hi')
+    return { token, options };
 }
