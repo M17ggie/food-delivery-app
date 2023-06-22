@@ -78,7 +78,8 @@ const AddDish = () => {
                             setImageFile(reader.result as string)
                             setDish({
                                 ...dish,
-                                photo: files[0]
+                                photo: files[0],
+                                imageURL: reader.result 
                             })
                         }
                     }
@@ -89,7 +90,7 @@ const AddDish = () => {
         }
     }
 
-    console.log("SEE THIS!!!", imageFile)
+    // console.log("SEE THIS!!!", imageFile)
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -144,8 +145,9 @@ const AddDish = () => {
     useEffect(() => {
         const img = imageRef.current;
         if (img) {
-            img.src = imageFile || '/assets/dish-fallback.jpg'; // Update the src attribute of the img tag with the imageFile state
-        }
+                img.src = imageFile || '/assets/dish-fallback.jpg'; // Update the src attribute of the img tag with the imageFile state
+            }
+            console.log(img, 'use effect')
     }, [imageFile]);
 
     return (
@@ -160,16 +162,16 @@ const AddDish = () => {
                 <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', maxWidth: '50rem' }}>
 
                     <Box>
-                        <label htmlFor='imageInput'>
+                        <label>
                             <img ref={imageRef} src={imageFile ? imageFile : '/assets/dish-fallback.jpg'} style={{ maxWidth: '15rem' }} />
-                        </label>
-                        <Input
+                            <Input
                             id='imageInput'
                             type='file'
                             name='photo'
                             onChange={imageChangeHandler}
-                            style={{ display: "none " }}
+                            // style={{ display: "none " }}
                         />
+                        </label>
                         <Typography>
                             {!!errors.photo && errors.photo}
                         </Typography>

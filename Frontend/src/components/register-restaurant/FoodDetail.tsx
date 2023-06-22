@@ -153,7 +153,6 @@ const FoodDetail = ({ next, prev }: { next: Function, prev: Function }) => {
                         >
                             Add Dish
                         </Button>
-
                         <Box mt={2}>
                             {foodDetail && foodDetail.foodDishes && foodDetail.foodDishes.map((dish, index) =>
                                 <Box key={index} mb={3}>

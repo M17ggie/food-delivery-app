@@ -35,5 +35,6 @@ export interface IFoodDish {
     price?: number | null,
     photo?: string | File | null | Blob,
     foodType?: string,
-    dishType?: string
+    dishType?: string,
+    imageURL?: string
 }
