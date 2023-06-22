@@ -12,9 +12,9 @@ import { fileSchema } from '@utils/validation/validation';
 const BasicDetail = ({ next, prev }: { next: Function, prev: Function }) => {
 
     const dispatch = useDispatch();
-    const storedBasicDetail = useSelector((state: any) => state.restaurantDetails.basicDetail)
+    // const storedBasicDetail = useSelector((state: any) => state.restaurantDetails.basicDetail)
     const [isLoading, setIsLoading] = useState(false);
-    const [basicDetails, setBasicDetails] = useState<IBasicDetails>(storedBasicDetail ?? {
+    const [basicDetails, setBasicDetails] = useState<IBasicDetails>({
         restaurantName: '',
         restaurantAddress: '',
         restaurantPhoneNumber: null,

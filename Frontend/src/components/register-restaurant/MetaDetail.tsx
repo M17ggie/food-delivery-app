@@ -178,8 +178,11 @@ const MetaDetail = ({ next, prev }: { next: Function, prev: Function }) => {
                                     <FormControlLabel
                                         name={type}
                                         label={type}
-                                        value={metaDetail['food'][type]}
-                                        control={<Checkbox checked={metaDetail['food'][lowerCaseConverter(type)]} />}
+                                        // value={metaDetail['food'][type]}
+                                        control={
+                                            <Checkbox
+                                            // checked={metaDetail['food'][lowerCaseConverter(type)]}
+                                            />}
                                         onChange={(e: React.SyntheticEvent) => { handleChange(e, 'food', type) }}
                                     />
                                 </Grid>
@@ -203,8 +206,11 @@ const MetaDetail = ({ next, prev }: { next: Function, prev: Function }) => {
                                             <FormControlLabel
                                                 name={type}
                                                 label={type}
-                                                value={metaDetail["restaurant"][lowerCaseConverter(type)]}
-                                                control={<Checkbox checked={metaDetail["restaurant"][lowerCaseConverter(type)]} />}
+                                                // value={metaDetail["restaurant"][lowerCaseConverter(type)]}
+                                                control={
+                                                    <Checkbox
+                                                    // checked={metaDetail["restaurant"][lowerCaseConverter(type)]}
+                                                    />}
                                                 onChange={(e: React.SyntheticEvent) => { handleChange(e, 'restaurant', type) }}
                                             />
                                         </Grid>
@@ -235,8 +241,11 @@ const MetaDetail = ({ next, prev }: { next: Function, prev: Function }) => {
                                             <FormControlLabel
                                                 name={cuisine}
                                                 label={cuisine}
-                                                value={metaDetail["cuisine"][lowerCaseConverter(cuisine)]}
-                                                control={<Checkbox checked={metaDetail["cuisine"][lowerCaseConverter(cuisine)]} />}
+                                                // value={metaDetail["cuisine"][lowerCaseConverter(cuisine)]}
+                                                control={
+                                                    <Checkbox
+                                                    // checked={metaDetail["cuisine"][lowerCaseConverter(cuisine)]}
+                                                    />}
                                                 onChange={(e: React.SyntheticEvent) => { handleChange(e, 'cuisine', cuisine) }}
                                             />
                                         </Grid>
@@ -293,7 +302,13 @@ const MetaDetail = ({ next, prev }: { next: Function, prev: Function }) => {
                             <Grid container spacing={2}>
                                 {daysOfWeek.map((day: string) =>
                                     < Grid item xs={6} sm={3}>
-                                        <FormControlLabel label={day} control={<Checkbox checked={metaDetail["daysOfWeek"][lowerCaseConverter(day)]} />} onChange={(e: React.SyntheticEvent) => handleChange(e, 'daysOfWeek', day)} />
+                                        <FormControlLabel
+                                            label={day}
+                                            control={
+                                                <Checkbox
+                                                // checked={metaDetail["daysOfWeek"][lowerCaseConverter(day)]}
+                                                />}
+                                            onChange={(e: React.SyntheticEvent) => handleChange(e, 'daysOfWeek', day)} />
                                     </Grid>
                                 )}
                             </Grid>

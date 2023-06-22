@@ -4,6 +4,7 @@ import { Box, Button } from '@mui/material'
 import * as yup from 'yup';
 import axios, { AxiosResponse, AxiosError } from 'axios';
 import AuthButton from './AuthButton';
+import { toast } from 'react-toastify';
 const BASE_URL = import.meta.env.VITE_APP_BASE_URL
 
 const LoginForm = ({ close, userType }: { close: Function, userType: string }) => {
@@ -40,7 +41,8 @@ const LoginForm = ({ close, userType }: { close: Function, userType: string }) =
                 close();
                 console.log(res)
             }).catch((err: AxiosError) => {
-                console.log(err.message)
+                const errorMessage = err.response?.data?.message ?? 'An error occured'
+                toast.error(errorMessage)
             })
         } catch (err: unknown) {
             const newErrors: Record<string, string> = {}
