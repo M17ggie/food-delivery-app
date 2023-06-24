@@ -24,7 +24,8 @@ const AddDish = () => {
         photo: editDishState.photo || '',
         price: editDishState.price || null,
         foodType: editDishState.foodType || '',
-        dishType: editDishState.dishType || ''
+        dishType: editDishState.dishType || '',
+        imageURL: editDishState.imageURL || '/assets/dish-fallback.jpg'
     })
     const [imageFile, setImageFile] = useState<string>('')
     const [errors, setErrors] = useState<any>({});
@@ -169,7 +170,7 @@ const AddDish = () => {
                             type='file'
                             name='photo'
                             onChange={imageChangeHandler}
-                            // style={{ display: "none " }}
+                            style={{ display: "none " }}
                         />
                         </label>
                         <Typography>

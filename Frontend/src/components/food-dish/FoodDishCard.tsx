@@ -17,7 +17,7 @@ const FoodDishCard = ({ id, name, price, description, photo, foodType, imageURL 
 
     const editDishHandler = () => {
         dispatch(openModal());
-        dispatch(selectDishToEdit({ id, name, price, description, photo, foodType, edit: true }))
+        dispatch(selectDishToEdit({ id, name, price, description, photo, foodType, edit: true, imageURL }))
     }
 
     // console.log("PHOTO", photo, imageURL)
