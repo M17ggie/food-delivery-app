@@ -14,8 +14,8 @@ const MetaDetail = ({ next, prev }: { next: Function, prev: Function }) => {
     const dispatch = useDispatch();
     const storedMetaDetail = useSelector((state: any) => state.restaurantDetails.metaDetail);
     const [isLoading, setIsLoading] = useState(false)
-    const [slots, setSlots] = useState(storedMetaDetail.slots ?? [{ from: "", to: "" }]);
-    const [metaDetail, setMetaDetail] = useState<any>(storedMetaDetail ?? {
+    const [slots, setSlots] = useState(storedMetaDetail.slots || [{ from: "", to: "" }]);
+    const [metaDetail, setMetaDetail] = useState<any>(storedMetaDetail || {
         food: foodType.reduce((acc, curr) => ({ ...acc, [curr.toLowerCase().split(" ").join("")]: false }), {}),
         restaurant: restaurantType.reduce((acc, curr) => ({ ...acc, [curr.toLowerCase().split(" ").join("")]: false }), {}),
         cuisine: cuisineType.reduce((acc, curr) => ({ ...acc, [curr.toLowerCase().split(" ").join("")]: false }), {}),
@@ -23,7 +23,6 @@ const MetaDetail = ({ next, prev }: { next: Function, prev: Function }) => {
         slots: slots
     });
     const [errors, setErrors] = useState<any>({});
-
     const addSlot = () => {
         if (slots.length < 5) {
             setSlots([...slots, { from: "", to: "" }])
@@ -50,7 +49,7 @@ const MetaDetail = ({ next, prev }: { next: Function, prev: Function }) => {
     }
 
     const slotTimeHandler = (e: React.ChangeEvent<HTMLInputElement>, index: number, field: 'from' | 'to') => {
-        const newTimeSlots = [...slots];
+        const newTimeSlots = [...slots].map(slot => ({ ...slot }));
         newTimeSlots[index][field] = e.target.value;
         setSlots(newTimeSlots);
     }
@@ -100,7 +99,6 @@ const MetaDetail = ({ next, prev }: { next: Function, prev: Function }) => {
         }
         setIsLoading(false)
     }
-
     const defaultFormValueHandler = (e: React.MouseEvent) => {
         e.preventDefault();
         setMetaDetail({
@@ -145,11 +143,28 @@ const MetaDetail = ({ next, prev }: { next: Function, prev: Function }) => {
             },
             "slots": [
                 {
-
+                    from: "17:00",
+                    to: "23:00"
+                },
+                {
+                    from: "11:00",
+                    to: "14:00"
                 }
             ]
         })
+        setSlots([
+            {
+                from: "17:00",
+                to: "23:00"
+            },
+            {
+                from: "11:00",
+                to: "14:00"
+            }
+        ])
     }
+
+    console.log(metaDetail)
 
     return (
         <>
@@ -178,12 +193,12 @@ const MetaDetail = ({ next, prev }: { next: Function, prev: Function }) => {
                                     <FormControlLabel
                                         name={type}
                                         label={type}
-                                        // value={metaDetail['food'][type]}
+                                        value={metaDetail['food'][type]}
                                         control={
                                             <Checkbox
-                                            // checked={metaDetail['food'][lowerCaseConverter(type)]}
+                                                checked={metaDetail['food'][lowerCaseConverter(type)]}
                                             />}
-                                        onChange={(e: React.SyntheticEvent) => { handleChange(e, 'food', type) }}
+                                        onChange={(e: React.SyntheticEvent) => { handleChange(e, 'food', lowerCaseConverter(type)) }}
                                     />
                                 </Grid>
                             )}
@@ -206,10 +221,10 @@ const MetaDetail = ({ next, prev }: { next: Function, prev: Function }) => {
                                             <FormControlLabel
                                                 name={type}
                                                 label={type}
-                                                // value={metaDetail["restaurant"][lowerCaseConverter(type)]}
+                                                value={metaDetail["restaurant"][lowerCaseConverter(type)]}
                                                 control={
                                                     <Checkbox
-                                                    // checked={metaDetail["restaurant"][lowerCaseConverter(type)]}
+                                                        checked={metaDetail["restaurant"][lowerCaseConverter(type)]}
                                                     />}
                                                 onChange={(e: React.SyntheticEvent) => { handleChange(e, 'restaurant', type) }}
                                             />
@@ -241,10 +256,10 @@ const MetaDetail = ({ next, prev }: { next: Function, prev: Function }) => {
                                             <FormControlLabel
                                                 name={cuisine}
                                                 label={cuisine}
-                                                // value={metaDetail["cuisine"][lowerCaseConverter(cuisine)]}
+                                                value={metaDetail["cuisine"][lowerCaseConverter(cuisine)]}
                                                 control={
                                                     <Checkbox
-                                                    // checked={metaDetail["cuisine"][lowerCaseConverter(cuisine)]}
+                                                        checked={metaDetail["cuisine"][lowerCaseConverter(cuisine)]}
                                                     />}
                                                 onChange={(e: React.SyntheticEvent) => { handleChange(e, 'cuisine', cuisine) }}
                                             />
@@ -300,13 +315,13 @@ const MetaDetail = ({ next, prev }: { next: Function, prev: Function }) => {
 
                         <FormControl>
                             <Grid container spacing={2}>
-                                {daysOfWeek.map((day: string) =>
-                                    < Grid item xs={6} sm={3}>
+                                {daysOfWeek.map((day: string, index: number) =>
+                                    < Grid key={index} item xs={6} sm={3}>
                                         <FormControlLabel
                                             label={day}
                                             control={
                                                 <Checkbox
-                                                // checked={metaDetail["daysOfWeek"][lowerCaseConverter(day)]}
+                                                    checked={metaDetail["daysOfWeek"][lowerCaseConverter(day)]}
                                                 />}
                                             onChange={(e: React.SyntheticEvent) => handleChange(e, 'daysOfWeek', day)} />
                                     </Grid>

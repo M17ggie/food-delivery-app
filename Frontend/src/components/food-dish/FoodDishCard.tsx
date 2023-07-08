@@ -20,8 +20,6 @@ const FoodDishCard = ({ id, name, price, description, photo, foodType, imageURL 
         dispatch(selectDishToEdit({ id, name, price, description, photo, foodType, edit: true, imageURL }))
     }
 
-    // console.log("PHOTO", photo, imageURL)
-
     return (
         <>
             {isModalOpen && <Dialog

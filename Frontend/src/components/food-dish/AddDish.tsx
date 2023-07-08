@@ -27,7 +27,7 @@ const AddDish = () => {
         dishType: editDishState.dishType || '',
         imageURL: editDishState.imageURL || '/assets/dish-fallback.jpg'
     })
-    const [imageFile, setImageFile] = useState<string>('')
+    const [imageFile, setImageFile] = useState<string>(editDishState.imageURL || "")
     const [errors, setErrors] = useState<any>({});
     const imageRef = useRef<HTMLImageElement>(null)
 
@@ -80,7 +80,7 @@ const AddDish = () => {
                             setDish({
                                 ...dish,
                                 photo: files[0],
-                                imageURL: reader.result 
+                                imageURL: reader.result
                             })
                         }
                     }
@@ -143,14 +143,6 @@ const AddDish = () => {
         }
     }
 
-    useEffect(() => {
-        const img = imageRef.current;
-        if (img) {
-                img.src = imageFile || '/assets/dish-fallback.jpg'; // Update the src attribute of the img tag with the imageFile state
-            }
-            console.log(img, 'use effect')
-    }, [imageFile]);
-
     return (
         <>
             <DialogTitle>
@@ -166,12 +158,12 @@ const AddDish = () => {
                         <label>
                             <img ref={imageRef} src={imageFile ? imageFile : '/assets/dish-fallback.jpg'} style={{ maxWidth: '15rem' }} />
                             <Input
-                            id='imageInput'
-                            type='file'
-                            name='photo'
-                            onChange={imageChangeHandler}
-                            style={{ display: "none " }}
-                        />
+                                id='imageInput'
+                                type='file'
+                                name='photo'
+                                onChange={imageChangeHandler}
+                                style={{ display: "none " }}
+                            />
                         </label>
                         <Typography>
                             {!!errors.photo && errors.photo}

@@ -10,6 +10,9 @@ import { Button, IconButton, Box, Dialog, DialogTitle, DialogContent, Typography
 import CloseIcon from '@mui/icons-material/Close';
 import LoginForm from '@components/login-signup/LoginForm';
 import SignUpForm from '@components/login-signup/SignUpForm';
+import UnAuthContent from '@components/content/UnAuthContent';
+import AuthContent from '../content/AuthContent';
+import UserDropdown from '../profile/UserDropdown';
 
 const Navbar = ({ userType }: { userType: string }) => {
 
@@ -43,16 +46,23 @@ const Navbar = ({ userType }: { userType: string }) => {
                 </Typography>
             </Link>
         </ListItem>
-        <ListItem key={2}>
-            <Button className='primary-btn' onClick={() => { loginContentHandler() }}>
-                Login
-            </Button>
-        </ListItem>
-        <ListItem key={3}>
-            <Button className='secondary-btn' onClick={() => { signupContentHandler() }}>
-                Signup
-            </Button>
-        </ListItem>
+        <UnAuthContent>
+            <ListItem key={2}>
+                <Button className='primary-btn' onClick={() => { loginContentHandler() }}>
+                    Login
+                </Button>
+            </ListItem>
+            <ListItem key={3}>
+                <Button className='secondary-btn' onClick={() => { signupContentHandler() }}>
+                    Signup
+                </Button>
+            </ListItem>
+        </UnAuthContent>
+        <AuthContent key={4}>
+            <ListItem>
+                <UserDropdown />
+            </ListItem>
+        </AuthContent>
     </List>
 
     return (

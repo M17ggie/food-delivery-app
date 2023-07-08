@@ -5,10 +5,14 @@ import * as yup from 'yup';
 import axios, { AxiosResponse, AxiosError } from 'axios';
 import AuthButton from './AuthButton';
 import { toast } from 'react-toastify';
+import { useDispatch } from 'react-redux';
+import { loginHandler, loginStateHandler } from '../../store/auth/authReducer';
+import { AppDispatch } from '@store/index';
 const BASE_URL = import.meta.env.VITE_APP_BASE_URL
 
 const LoginForm = ({ close, userType }: { close: Function, userType: string }) => {
 
+    const dispatch = useDispatch<AppDispatch>()
     const [loginData, setLoginData] = useState({
         email: "",
         password: ""
@@ -35,12 +39,10 @@ const LoginForm = ({ close, userType }: { close: Function, userType: string }) =
         try {
             await schema.validate(loginData, { abortEarly: false });
             setErrors({});
-            axios.post(`${BASE_URL}/api/v1/auth/${userType}/login`, {
-                ...loginData
-            }).then((res: AxiosResponse) => {
+            dispatch(loginHandler({ loginDetails: loginData, userType })).unwrap().then((res) => {
+                dispatch(loginStateHandler(res))
                 close();
-                console.log(res)
-            }).catch((err: AxiosError) => {
+            }).catch((err) => {
                 const errorMessage = err.response?.data?.message ?? 'An error occured'
                 toast.error(errorMessage)
             })
