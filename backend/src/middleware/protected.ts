@@ -9,8 +9,8 @@ export const adminOnly = (req: Request, res: Response, next: NextFunction) => {
     if (decoded && decoded === "642b083d0fe5426488d3b5c9") {
       next();
     } else {
-      next(new ErrorResponse("Intruder", 401));
+      return next(new ErrorResponse("Intruder", 401));
     }
   } catch (err) {}
-  //   if()
+  return next(new ErrorResponse("Intruder", 401));
 };
