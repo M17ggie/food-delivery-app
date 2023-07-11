@@ -8,7 +8,6 @@ import { toast } from 'react-toastify';
 import { useDispatch } from 'react-redux';
 import { loginHandler, loginStateHandler } from '../../store/auth/authReducer';
 import { AppDispatch } from '@store/index';
-const BASE_URL = import.meta.env.VITE_APP_BASE_URL
 
 const LoginForm = ({ close, userType }: { close: Function, userType: string }) => {
 

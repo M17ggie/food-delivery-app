@@ -79,6 +79,18 @@ const FoodDetail = ({ next, prev }: { next: Function, prev: Function }) => {
                 basicDetail,
                 metaDetail,
                 foodDetail: foodDishDetails
+            }));
+            dispatch(addRestaurantDetails({
+                type: "basicDetail",
+                details: {}
+            }))
+            dispatch(addRestaurantDetails({
+                type: "metaDetail",
+                details: {}
+            }))
+            dispatch(addRestaurantDetails({
+                type: "foodDetail",
+                details: {}
             }))
         } catch (err: unknown) {
             if (err instanceof yup.ValidationError) {

@@ -4,7 +4,7 @@ import { loadFromLocalStorage, saveToLocalStorage } from "@utils/helpers/helpers
 
 interface IPayload {
     type: string,
-    details: IBasicDetails | IMetaDetail | IFoodDetail
+    details: IBasicDetails | IMetaDetail | IFoodDetail | {}
 }
 
 const locallyStored = loadFromLocalStorage("restaurant-details")

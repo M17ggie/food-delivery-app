@@ -11,8 +11,9 @@ export interface IUser extends mongoose.Document {
   password: string;
   resetPasswordToken: String;
   resetPasswordExpire: Date;
-  getSignedJWTToken(): String;
-  matchedPasswords(password: string): Boolean;
+  getSignedJWTToken(): String,
+  decodeToken(): String | null,
+  matchedPasswords(password: string): Boolean
 }
 
 const UserSchema = new mongoose.Schema<IUser>(

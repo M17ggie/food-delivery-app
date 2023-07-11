@@ -24,6 +24,7 @@
       "@routes/*": ["src/routes/*"],
       "@locales/*": ["src/locales/*"],
       "@api/*": ["src/api/*"],
+      "@hooks/*": ["src/hooks/*"],
       "@pages/*": ["src/pages/*"]
     }
   },

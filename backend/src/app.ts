@@ -21,15 +21,15 @@ app.use(express.json())
 //cookie parser
 app.use(cookieParser())
 
-//session
-// app.use(
-//     session({
-//         secret: process.env.SESSION_KEY!,
-//         resave: false,
-//         saveUninitialized: true,
-//         cookie: { secure: false }
-//     })
-// );
+// session
+app.use(
+    session({
+        secret: process.env.SESSION_KEY!,
+        resave: false,
+        saveUninitialized: true,
+        cookie: { secure: false }
+    })
+);
 
 const authRoutes = require('./routes/auth/authRoutes');
 const authErrorHandler = require('./middleware/authError');

@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { asyncHandler } from "../../middleware/async";
+import { asyncHandler } from "../../middleware/async.middleware";
 import { ErrorResponse } from "../../utils/errorResponse";
 import User, { IUser } from "../../models/User";
 import Restaurant, { IRestaurant } from "../../models/Restaurant";
@@ -101,20 +101,34 @@ export const restaurantLoginHandler = asyncHandler(
   }
 );
 
-export const restaurantRegisterHandler = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const { email, password, name } = req.body;
-    const { token, options } = await registerUser(
-      Restaurant,
-      email,
-      password,
-      name
-    );
+export const restaurantRegisterHandler = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  const { email, password, name } = req.body;
+  const { token, options } = await registerUser(
+    Restaurant,
+    email,
+    password,
+    name
+  );
 
-    await registerUser(User, email, password, name);
-    res.cookie("token", token, options).send("Registered Restaurant");
+  await registerUser(User, email, password, name);
+  res.cookie("token", token, options).send("Registered Restaurant");
+})
+
+// logout handler******************************
+
+export const logoutHandler = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  res.send('Logged Out!')
+})
+
+export const getUserInfoHandler = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+
+  const user = await User.findById(req);
+  if (user) {
+    return res.send({ name: user?.name, email: user?.email })
+  } else {
+    return next(new ErrorResponse('User not found', 404))
   }
-);
+})
 
 // cookie maker***********
 const sendTokenResponse = async (user: IUser | IRestaurant) => {
