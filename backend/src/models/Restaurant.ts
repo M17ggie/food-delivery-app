@@ -1,5 +1,5 @@
 import { NextFunction } from "connect";
-import mongoose from "mongoose";
+import mongoose, { SchemaType } from "mongoose";
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 
@@ -40,7 +40,84 @@ const RestaurantSchema = new mongoose.Schema({
     isDetailsSubmitted: {
         type: Boolean,
         default: false
-    }
+    },
+    basicDetail: {
+        restaurantName: String,
+        restaurantAddress: String,
+        restaurantPhoneNumber: Number,
+        restaurantEmail: String,
+        fssaiLicense: String,
+        location: {
+            latitude: Number,
+            longitude: Number
+        },
+        ownerPhoneNumber: Number,
+        ownerName: String,
+        bankAccountNumber: Number,
+        ifscCode: String,
+        blankCheque: String
+    },
+    metaDetail: {
+        food: {
+            veg: Boolean,
+            nonveg: Boolean
+        },
+        restaurant: {
+            bakery: Boolean,
+            beverageshop: Boolean,
+            casualdining: Boolean,
+            dhaba: Boolean,
+            dessertparlour: Boolean,
+            foodcourt: Boolean,
+            quickbites: Boolean
+        },
+        cuisine: {
+            beverages: Boolean,
+            desserts: Boolean,
+            biryani: Boolean,
+            chinese: Boolean,
+            continental: Boolean,
+            malwani: Boolean,
+            northindian: Boolean,
+            pasta: Boolean,
+            pizza: Boolean,
+            rolls: Boolean,
+            roastchicken: Boolean,
+            sandwich: Boolean,
+            seafood: Boolean,
+            streetfood: Boolean,
+            southindian: Boolean
+        },
+        daysOfWeek: {
+            monday: Boolean,
+            tuesday: Boolean,
+            wednesday: Boolean,
+            thursday: Boolean,
+            friday: Boolean,
+            saturday: Boolean,
+            sunday: Boolean
+        },
+        slots: [
+            {
+                startTime: Date,
+                endTime: Date
+            }
+        ]
+    },
+    foodDetail: [
+        {
+            id: Number,
+            name: String,
+            description: String,
+            photo: {
+                url: String,
+                alt: String
+            },
+            price: String,
+            foodType: String,
+            dishType: String
+        }
+    ]
 }, {
     timestamps: {
         createdAt: true,

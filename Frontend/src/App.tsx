@@ -18,7 +18,7 @@ function App() {
           <Route path="/partner-with-us" element={<PartnerWithUs />} />
 
           {/* register restaurant */}
-          {/* <Route path="/register/restaurant" element={<UnregisteredRestaurantProtect />}> */}
+          {/* <Route path="/register" element={<UnregisteredRestaurantProtect />}> */}
           <Route path="/register/restaurant" element={<RegisterRestaurant />} />
           {/* </Route> */}
         </Routes>

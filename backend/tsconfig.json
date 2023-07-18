@@ -8,9 +8,18 @@
     "moduleResolution": "node",
     "esModuleInterop": true,
     "baseUrl": "./src",
-    "types": ["node","express"],
-    "typeRoots": ["node_modules/@types"]
+    "types": [
+      "node",
+      "express"
+    ],
+    "typeRoots": [
+      "src/types",
+      "node_modules/@types"
+    ]
   },
+  "include": [
+    "src/**/*.ts"
+  ],
   "exclude": [
     "./node_modules"
   ]

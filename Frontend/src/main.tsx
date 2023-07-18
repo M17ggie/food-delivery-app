@@ -6,6 +6,7 @@ import { Provider } from 'react-redux'
 import store from '@store/index'
 import { ThemeProvider } from '@emotion/react'
 import { theme } from "@styles/global"
+import 'react-toastify/dist/ReactToastify.css';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>

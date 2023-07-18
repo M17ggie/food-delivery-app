@@ -8,7 +8,7 @@ import { openModal, removeDish, selectDishToEdit } from '@store/restaurant-regis
 import { useSelector } from 'react-redux';
 import AddDish from './AddDish';
 
-const FoodDishCard = ({ id, name, price, description, photo, foodType }: IFoodDish) => {
+const FoodDishCard = ({ id, name, price, description, photo, foodType, imageURL }: IFoodDish) => {
     const { isModalOpen } = useSelector((state: any) => state.dish)
     const dispatch = useDispatch();
     const removeDishHandler = () => {
@@ -17,10 +17,8 @@ const FoodDishCard = ({ id, name, price, description, photo, foodType }: IFoodDi
 
     const editDishHandler = () => {
         dispatch(openModal());
-        dispatch(selectDishToEdit({ id, name, price, description, photo, foodType, edit: true }))
+        dispatch(selectDishToEdit({ id, name, price, description, photo, foodType, edit: true, imageURL }))
     }
-
-    console.log("PHOTO", photo)
 
     return (
         <>
@@ -51,7 +49,7 @@ const FoodDishCard = ({ id, name, price, description, photo, foodType }: IFoodDi
                             <CardMedia
                                 component='img'
                                 height='200'
-                                image={photo || '/assets/dish-fallback.jpg'}
+                                image={imageURL || '/assets/dish-fallback.jpg'}
                             />
                         </Grid>
 

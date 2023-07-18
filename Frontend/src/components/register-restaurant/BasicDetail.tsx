@@ -12,23 +12,29 @@ import { fileSchema } from '@utils/validation/validation';
 const BasicDetail = ({ next, prev }: { next: Function, prev: Function }) => {
 
     const dispatch = useDispatch();
-    const storedBasicDetail = useSelector((state: any) => state.restaurantDetails.basicDetail)
+    const storedBasicDetail = useSelector((state: any) => state.restaurantDetails.basicDetail);
     const [isLoading, setIsLoading] = useState(false);
-    const [basicDetails, setBasicDetails] = useState<IBasicDetails>(storedBasicDetail ?? {
-        restaurantName: '',
-        restaurantAddress: '',
-        restaurantPhoneNumber: null,
-        restaurantEmail: '',
-        fssaiLicense: null,
-        location: { latitude: null, longitude: null },
-        ownerPhoneNumber: null,
-        ownerName: "",
-        bankAccountNumber: null,
-        ifscCode: '',
-        blankCheque: null
+    const [basicDetails, setBasicDetails] = useState<IBasicDetails>(() => {
+        if (Object.keys(storedBasicDetail).length === 0) {
+            return {
+                restaurantName: '',
+                restaurantAddress: '',
+                restaurantPhoneNumber: null,
+                restaurantEmail: '',
+                fssaiLicense: null,
+                location: { latitude: null, longitude: null },
+                ownerPhoneNumber: null,
+                ownerName: "",
+                bankAccountNumber: null,
+                ifscCode: '',
+                blankCheque: null
+            };
+        } else {
+            return storedBasicDetail;
+        }
     });
     const [errors, setErrors] = useState<any>({});
-
+    console.log(basicDetails)
     const schema = yup.object().shape({
         restaurantName: yup.string().required('Please enter restaurant\'s name').max(30, 'Name should not exceed 50 characters'),
         restaurantAddress: yup.string().required('Please enter restaurant\'s address').min(10, 'Please write address in brief'),

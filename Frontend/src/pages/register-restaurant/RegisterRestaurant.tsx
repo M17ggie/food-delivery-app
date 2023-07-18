@@ -9,7 +9,7 @@ import { registerRestaurantTheme } from '@styles/register-restaurant/register-re
 
 const RegisterRestaurant = () => {
 
-    const [activeStep, setActiveStep] = useState(2);
+    const [activeStep, setActiveStep] = useState(0);
 
     const nextStep = () => {
         setActiveStep(prevStep => prevStep + 1)

@@ -1,6 +1,6 @@
 import { Box, Button, Card, Input, Typography, Dialog } from '@mui/material'
 import { useEffect, useState } from 'react'
-import { IFoodDetail } from '@utils/interfaces/restaurant-registration/RestaurantRegister'
+import { IFoodDetail, IFoodDish } from '@utils/interfaces/restaurant-registration/RestaurantRegister'
 import * as yup from 'yup'
 import FoodDishCard from '@components/food-dish/FoodDishCard'
 import AddDish from '@components/food-dish/AddDish'
@@ -9,7 +9,7 @@ import { useDispatch } from 'react-redux'
 import { openModal } from '@store/restaurant-register/dishReducer'
 import { CardContent } from '@material-ui/core'
 import { addRestaurantDetails } from '@store/restaurant-register/restaurant-details'
-import { fileSchema } from '@utils/validation/validation'
+import { registerRestaurantHandler } from '@api/restaurantApi'
 
 const FoodDetail = ({ next, prev }: { next: Function, prev: Function }) => {
 
@@ -69,11 +69,29 @@ const FoodDetail = ({ next, prev }: { next: Function, prev: Function }) => {
         try {
             await schema.validate(foodDetail, { abortEarly: false });
             setErrors({});
-            console.log({
+            const foodDishDetails: any = foodDetail.foodDishes && [...foodDetail.foodDishes].map(food => { return { ...food, imageURL: undefined } }) || [];
+            // console.log({
+            //     basicDetail,
+            //     metaDetail,
+            //     foodDishDetails
+            // })
+            dispatch(registerRestaurantHandler({
                 basicDetail,
                 metaDetail,
-                foodDetail
-            })
+                foodDetail: foodDishDetails
+            }));
+            dispatch(addRestaurantDetails({
+                type: "basicDetail",
+                details: {}
+            }))
+            dispatch(addRestaurantDetails({
+                type: "metaDetail",
+                details: {}
+            }))
+            dispatch(addRestaurantDetails({
+                type: "foodDetail",
+                details: {}
+            }))
         } catch (err: unknown) {
             if (err instanceof yup.ValidationError) {
                 const newErrors: { [key: string]: string } = {};
@@ -153,7 +171,6 @@ const FoodDetail = ({ next, prev }: { next: Function, prev: Function }) => {
                         >
                             Add Dish
                         </Button>
-
                         <Box mt={2}>
                             {foodDetail && foodDetail.foodDishes && foodDetail.foodDishes.map((dish, index) =>
                                 <Box key={index} mb={3}>

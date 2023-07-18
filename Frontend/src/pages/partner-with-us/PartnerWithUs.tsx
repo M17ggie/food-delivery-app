@@ -10,8 +10,10 @@ import SignUpForm from '@components/login-signup/SignUpForm'
 import Navbar from '@components/navbar/Navbar'
 import { ThemeProvider } from '@emotion/react'
 import { registerRestaurantTheme } from '@styles/register-restaurant/register-restaurant-theme'
+import usePageTitle from '@hooks/usePageTitle'
 
 const PartnerWithUs = () => {
+    usePageTitle("Partner with us");
     const [openAuthModal, setOpenAuthModal] = useState(false);
     const [showLogin, setShowLogin] = useState(true);
     const [modalTitle, setModalTitle] = useState('')

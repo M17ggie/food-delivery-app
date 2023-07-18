@@ -24,9 +24,10 @@ const AddDish = () => {
         photo: editDishState.photo || '',
         price: editDishState.price || null,
         foodType: editDishState.foodType || '',
-        dishType: editDishState.dishType || ''
+        dishType: editDishState.dishType || '',
+        imageURL: editDishState.imageURL || '/assets/dish-fallback.jpg'
     })
-    const [imageFile, setImageFile] = useState<string>('')
+    const [imageFile, setImageFile] = useState<string>(editDishState.imageURL || "")
     const [errors, setErrors] = useState<any>({});
     const imageRef = useRef<HTMLImageElement>(null)
 
@@ -78,7 +79,8 @@ const AddDish = () => {
                             setImageFile(reader.result as string)
                             setDish({
                                 ...dish,
-                                photo: files[0]
+                                photo: files[0],
+                                imageURL: reader.result
                             })
                         }
                     }
@@ -89,7 +91,7 @@ const AddDish = () => {
         }
     }
 
-    console.log("SEE THIS!!!", imageFile)
+    // console.log("SEE THIS!!!", imageFile)
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -141,13 +143,6 @@ const AddDish = () => {
         }
     }
 
-    useEffect(() => {
-        const img = imageRef.current;
-        if (img) {
-            img.src = imageFile || '/assets/dish-fallback.jpg'; // Update the src attribute of the img tag with the imageFile state
-        }
-    }, [imageFile]);
-
     return (
         <>
             <DialogTitle>
@@ -160,16 +155,16 @@ const AddDish = () => {
                 <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', maxWidth: '50rem' }}>
 
                     <Box>
-                        <label htmlFor='imageInput'>
+                        <label>
                             <img ref={imageRef} src={imageFile ? imageFile : '/assets/dish-fallback.jpg'} style={{ maxWidth: '15rem' }} />
+                            <Input
+                                id='imageInput'
+                                type='file'
+                                name='photo'
+                                onChange={imageChangeHandler}
+                                style={{ display: "none " }}
+                            />
                         </label>
-                        <Input
-                            id='imageInput'
-                            type='file'
-                            name='photo'
-                            onChange={imageChangeHandler}
-                            style={{ display: "none " }}
-                        />
                         <Typography>
                             {!!errors.photo && errors.photo}
                         </Typography>
