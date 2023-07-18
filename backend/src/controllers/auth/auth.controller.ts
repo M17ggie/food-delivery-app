@@ -121,8 +121,8 @@ export const logoutHandler = asyncHandler(async (req: Request, res: Response, ne
 })
 
 export const getUserInfoHandler = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-
-  const user = await User.findById(req);
+  // console.log("ID SHIT", req.userId)
+  const user = await User.findById(req.userId);
   if (user) {
     return res.send({ name: user?.name, email: user?.email })
   } else {
@@ -135,7 +135,7 @@ const sendTokenResponse = async (user: IUser | IRestaurant) => {
   const token = await user.getSignedJWTToken();
   console.log(token);
   const options = {
-    httpOnly: true,
+    httpOnly: true
   };
   return { token, options };
 };

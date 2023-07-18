@@ -1,5 +1,5 @@
 import express from 'express';
-import { userLoginHandler, userRegisterHandler, restaurantLoginHandler, restaurantRegisterHandler, logoutHandler, getUserInfoHandler } from "../../controllers/auth/authController";
+import { userLoginHandler, userRegisterHandler, restaurantLoginHandler, restaurantRegisterHandler, logoutHandler, getUserInfoHandler } from "../../controllers/auth/auth.controller";
 import { adminOnly } from '../../middleware/protected.middleware';
 
 const router = express.Router();
