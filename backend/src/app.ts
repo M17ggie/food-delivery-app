@@ -22,16 +22,6 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 //cookie parser
 app.use(cookieParser())
 
-// session
-app.use(
-    session({
-        secret: process.env.SESSION_KEY!,
-        resave: false,
-        saveUninitialized: true,
-        cookie: { secure: false }
-    })
-);
-
 const authRoutes = require('./routes/auth/auth.routes');
 const authErrorHandler = require('./middleware/auth-error.middleware');
 const registerRoutes = require('./routes/register/register.routes')
