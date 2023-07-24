@@ -15,12 +15,18 @@ const MetaDetail = ({ next, prev }: { next: Function, prev: Function }) => {
     const storedMetaDetail = useSelector((state: any) => state.restaurantDetails.metaDetail);
     const [isLoading, setIsLoading] = useState(false)
     const [slots, setSlots] = useState(storedMetaDetail.slots || [{ from: "", to: "" }]);
-    const [metaDetail, setMetaDetail] = useState<any>(storedMetaDetail || {
-        food: foodType.reduce((acc, curr) => ({ ...acc, [curr.toLowerCase().split(" ").join("")]: false }), {}),
-        restaurant: restaurantType.reduce((acc, curr) => ({ ...acc, [curr.toLowerCase().split(" ").join("")]: false }), {}),
-        cuisine: cuisineType.reduce((acc, curr) => ({ ...acc, [curr.toLowerCase().split(" ").join("")]: false }), {}),
-        daysOfWeek: daysOfWeek.reduce((acc, curr) => ({ ...acc, [curr.toLowerCase().split(" ").join("")]: false }), {}),
-        slots: slots
+    const [metaDetail, setMetaDetail] = useState<any>(() => {
+        if (Object.keys(storedMetaDetail).length === 0) {
+            return {
+                food: foodType.reduce((acc, curr) => ({ ...acc, [curr.toLowerCase().split(" ").join("")]: false }), {}),
+                restaurant: restaurantType.reduce((acc, curr) => ({ ...acc, [curr.toLowerCase().split(" ").join("")]: false }), {}),
+                cuisine: cuisineType.reduce((acc, curr) => ({ ...acc, [curr.toLowerCase().split(" ").join("")]: false }), {}),
+                daysOfWeek: daysOfWeek.reduce((acc, curr) => ({ ...acc, [curr.toLowerCase().split(" ").join("")]: false }), {}),
+                slots: [{ from: "", to: "" }],
+            };
+        } else {
+            return storedMetaDetail;
+        }
     });
     const [errors, setErrors] = useState<any>({});
     const addSlot = () => {

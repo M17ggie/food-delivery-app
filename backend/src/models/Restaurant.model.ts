@@ -1,14 +1,24 @@
 import { NextFunction } from "connect";
-import mongoose, { SchemaType } from "mongoose";
+import mongoose, { Document, Model } from "mongoose";
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 
-export interface IRestaurant extends mongoose.Document {
+export interface IRestaurant extends Document {
     name: String,
     email: String,
     role: mongoose.Types.ObjectId[],
+    isDetailsSubmitted: Boolean,
+    status: String,
+    menuCard: String,
+    basicDetail: { [key: string]: any },
+    metaDetail: { [key: string]: any },
+    foodDetail: { [key: string]: any },
     getSignedJWTToken(): string,
     matchedPasswords(password: string): Boolean
+}
+
+export interface IRestaurantModel extends Model<IRestaurant> {
+    restaurantBasicDetail(email: string): Promise<IRestaurant | null>;
 }
 
 const RestaurantSchema = new mongoose.Schema({
@@ -41,6 +51,11 @@ const RestaurantSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    status: {
+        type: String,
+        default: "pending"
+    },
+    menuCard: String,
     basicDetail: {
         restaurantName: String,
         restaurantAddress: String,
@@ -109,10 +124,7 @@ const RestaurantSchema = new mongoose.Schema({
             id: Number,
             name: String,
             description: String,
-            photo: {
-                url: String,
-                alt: String
-            },
+            imageURL: String,
             price: String,
             foodType: String,
             dishType: String
@@ -145,5 +157,10 @@ RestaurantSchema.methods.getSignedJWTToken = function () {
     return jwt.sign({ id: this._id }, process.env.JWT_SECRET!)
 }
 
-const Restaurant = mongoose.model<IRestaurant>('Restaurant', RestaurantSchema);
+//Find restaurant
+RestaurantSchema.statics.restaurantBasicDetail = async function (email: string) {
+    return await this.findOne({ email }).select("-password -__v -createdAt -role -metaDetail -foodDetail")
+}
+
+const Restaurant = mongoose.model<IRestaurant, IRestaurantModel>('Restaurant', RestaurantSchema);
 export default Restaurant

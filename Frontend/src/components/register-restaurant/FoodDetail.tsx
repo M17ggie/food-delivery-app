@@ -10,6 +10,7 @@ import { openModal } from '@store/restaurant-register/dishReducer'
 import { CardContent } from '@material-ui/core'
 import { addRestaurantDetails } from '@store/restaurant-register/restaurant-details'
 import { registerRestaurantHandler } from '@api/restaurantApi'
+import { fileSchema } from '@utils/validation/validation'
 
 const FoodDetail = ({ next, prev }: { next: Function, prev: Function }) => {
 
@@ -37,7 +38,12 @@ const FoodDetail = ({ next, prev }: { next: Function, prev: Function }) => {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, files } = e.target;
         if (files && files.length > 0) {
-            setFoodDetail({ ...foodDetail, [name]: { file: files[0] } })
+            const reader = new FileReader();
+            reader.onload = () => {
+                const base64Data = reader.result as string;
+                setFoodDetail({ ...foodDetail, [name]: base64Data })
+            }
+            reader.readAsDataURL(files[0])
         }
     }
 
@@ -46,22 +52,10 @@ const FoodDetail = ({ next, prev }: { next: Function, prev: Function }) => {
     }
 
     const schema = yup.object().shape({
-        menuCard: yup
-            .mixed()
-            .required('Please upload the image')
-            .test('file-size', 'File size must be less than 1MB', (value: any) => {
-                if (value && value.file) {
-                    return value.file.size <= 1024 * 1024;
-                }
-                return false;
-            })
-            .test('file-type', 'Only JPEG image is allowed', (value: any) => {
-                if (value && value.file) {
-                    return value.file.type === 'image/jpeg';
-                }
-                return false;
-            })
+        menuCard: fileSchema
     });
+
+    console.log(foodDetail)
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -69,29 +63,24 @@ const FoodDetail = ({ next, prev }: { next: Function, prev: Function }) => {
         try {
             await schema.validate(foodDetail, { abortEarly: false });
             setErrors({});
-            const foodDishDetails: any = foodDetail.foodDishes && [...foodDetail.foodDishes].map(food => { return { ...food, imageURL: undefined } }) || [];
-            // console.log({
-            //     basicDetail,
-            //     metaDetail,
-            //     foodDishDetails
-            // })
+            // const foodDishDetails: any = foodDetail.foodDishes && [...foodDetail.foodDishes].map(food => { return { ...food, imageURL: undefined } }) || [];
             dispatch(registerRestaurantHandler({
                 basicDetail,
                 metaDetail,
-                foodDetail: foodDishDetails
+                foodDetail
             }));
-            dispatch(addRestaurantDetails({
-                type: "basicDetail",
-                details: {}
-            }))
-            dispatch(addRestaurantDetails({
-                type: "metaDetail",
-                details: {}
-            }))
-            dispatch(addRestaurantDetails({
-                type: "foodDetail",
-                details: {}
-            }))
+            // dispatch(addRestaurantDetails({
+            //     type: "basicDetail",
+            //     details: {}
+            // }))
+            // dispatch(addRestaurantDetails({
+            //     type: "metaDetail",
+            //     details: {}
+            // }))
+            // dispatch(addRestaurantDetails({
+            //     type: "foodDetail",
+            //     details: {}
+            // }))
         } catch (err: unknown) {
             if (err instanceof yup.ValidationError) {
                 const newErrors: { [key: string]: string } = {};

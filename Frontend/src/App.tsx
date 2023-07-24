@@ -5,6 +5,8 @@ import PartnerWithUs from '@pages/partner-with-us/PartnerWithUs'
 import RegisterRestaurant from '@pages/register-restaurant/RegisterRestaurant'
 import UnregisteredRestaurantProtect from '@routes/UnregisteredRestaurantProtect'
 import { ToastContainer } from 'react-toastify'
+import AdminDashboard from '@pages/admin-dashboard/AdminDashboard'
+import AdminOnly from '@routes/AdminOnly'
 
 function App() {
 
@@ -18,8 +20,12 @@ function App() {
           <Route path="/partner-with-us" element={<PartnerWithUs />} />
 
           {/* register restaurant */}
-          {/* <Route path="/register" element={<UnregisteredRestaurantProtect />}> */}
-          <Route path="/register/restaurant" element={<RegisterRestaurant />} />
+          <Route path="/register" element={<UnregisteredRestaurantProtect />}>
+            <Route path="/register/restaurant" element={<RegisterRestaurant />} />
+          </Route>
+
+          {/* <Route path="/admin" element={<AdminOnly />} > */}
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
           {/* </Route> */}
         </Routes>
       </Router>

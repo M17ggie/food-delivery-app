@@ -80,7 +80,7 @@ const AddDish = () => {
                             setDish({
                                 ...dish,
                                 photo: files[0],
-                                imageURL: reader.result
+                                imageURL: reader.result as string
                             })
                         }
                     }
@@ -90,8 +90,6 @@ const AddDish = () => {
             reader.readAsDataURL(files[0])
         }
     }
-
-    // console.log("SEE THIS!!!", imageFile)
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;

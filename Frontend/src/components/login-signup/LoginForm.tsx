@@ -1,16 +1,18 @@
-import { useState } from 'react'
-import TextField from '@mui/material/TextField'
-import { Box, Button } from '@mui/material'
-import * as yup from 'yup';
-import axios, { AxiosResponse, AxiosError } from 'axios';
-import AuthButton from './AuthButton';
-import { toast } from 'react-toastify';
-import { useDispatch } from 'react-redux';
-import { loginHandler, loginStateHandler } from '../../store/auth/authReducer';
+import { Box } from '@mui/material';
+import TextField from '@mui/material/TextField';
 import { AppDispatch } from '@store/index';
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { toast } from 'react-toastify';
+import * as yup from 'yup';
+import { getBasicRestaurantDetail } from '../../api/restaurantApi';
+import { loginHandler, loginStateHandler } from '../../store/auth/authReducer';
+import AuthButton from './AuthButton';
+import { useNavigate } from 'react-router-dom';
 
 const LoginForm = ({ close, userType }: { close: Function, userType: string }) => {
 
+    const navigate = useNavigate();
     const dispatch = useDispatch<AppDispatch>()
     const [loginData, setLoginData] = useState({
         email: "",
@@ -40,9 +42,22 @@ const LoginForm = ({ close, userType }: { close: Function, userType: string }) =
             setErrors({});
             dispatch(loginHandler({ loginDetails: loginData, userType })).unwrap().then((res) => {
                 dispatch(loginStateHandler(res))
+                switch (userType) {
+                    case "restaurant": const response = dispatch(getBasicRestaurantDetail(res));
+                        const isDetailsSubmitted = response.payload.data.isDetailsSubmitted
+                        if (isDetailsSubmitted) {
+                            navigate("/restaurant-dashboard", { replace: true });
+                        } else {
+                            navigate("/register/restaurant", { replace: true });
+                        }
+                        break;
+                    // case "delivery": dispatch();
+                    //     break;
+                    default: break;
+                }
                 close();
             }).catch((err) => {
-                const errorMessage = err.response?.data?.message ?? 'An error occured'
+                const errorMessage = err.response?.data?.message || 'An error occured'
                 toast.error(errorMessage)
             })
         } catch (err: unknown) {

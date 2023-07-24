@@ -1,5 +1,5 @@
 import express from 'express';
-import { registerRestaurantDetailsHandler } from '../../controllers/register/registerController';
+import { registerRestaurantDetailsHandler } from '../../controllers/register/register.controller';
 
 const router = express.Router();
 
