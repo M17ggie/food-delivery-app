@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { asyncHandler } from "../../middleware/async.middleware";
 import { ErrorResponse } from "../../utils/errorResponse";
-import User, { IUser } from "../../models/User";
-import Restaurant, { IRestaurant } from "../../models/Restaurant";
+import User, { IUser } from "../../models/User.model";
+import Restaurant, { IRestaurant, IRestaurantModel } from "../../models/Restaurant.model";
 
 // validate credentials***************************
 const validateCredentials = (
@@ -16,12 +16,7 @@ const validateCredentials = (
 };
 
 // register user**************************
-const registerUser = async (
-  userModel: any,
-  email: string,
-  password: string,
-  name: string
-) => {
+const registerUser = async (userModel: any, email: string, password: string, name: string) => {
   const user = await userModel.create({
     name,
     email,
@@ -34,71 +29,66 @@ const registerUser = async (
 
 //User authentication****************************
 
-export const userLoginHandler = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const { password, email } = req.body;
+export const userLoginHandler = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  const { password, email } = req.body;
 
-    //credentials should not be empty
-    validateCredentials(email, password, next);
+  //credentials should not be empty
+  validateCredentials(email, password, next);
 
-    //check if user exists
-    const user = await User.findOne({ email }).select(["password"]);
+  //check if user exists
+  const user = await User.findOne({ email }).select(["password"]);
 
-    if (!user) {
-      return next(
-        new ErrorResponse(
-          "User does not exist. Please register to continue.",
-          404
-        )
-      );
-    }
-
-    const isMatch = await user.matchedPasswords(password);
-    if (!isMatch) {
-      next(new ErrorResponse("Password entered is incorrect", 400));
-    }
-
-    //send token if all goes well
-    const { token, options } = await sendTokenResponse(user);
-
-    res.cookie("token", token, options).send("Logged In");
+  if (!user) {
+    return next(
+      new ErrorResponse(
+        "User does not exist. Please register to continue.",
+        404
+      )
+    );
   }
+
+  const isMatch = await user.matchedPasswords(password);
+  if (!isMatch) {
+    next(new ErrorResponse("Password entered is incorrect", 400));
+  }
+
+  //send token if all goes well
+  const { token, options } = await sendTokenResponse(user);
+
+  res.cookie("token", token, options).send("Logged In");
+}
 );
 
-export const userRegisterHandler = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const { name, password, email } = req.body;
+export const userRegisterHandler = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  const { name, password, email } = req.body;
 
-    const { token, options } = await registerUser(User, email, password, name);
-    res.cookie("token", token, options).send("Registered");
-  }
+  const { token, options } = await registerUser(User, email, password, name);
+  res.cookie("token", token, options).send("Registered");
+}
 );
 
 // Restaurant authentication**************************
 
-export const restaurantLoginHandler = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const { email, password } = req.body;
+export const restaurantLoginHandler = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  const { email, password } = req.body;
 
-    validateCredentials(email, password, next);
+  validateCredentials(email, password, next);
 
-    const restaurantUser = await Restaurant.findOne({ email }).select([
-      "password",
-    ]);
+  // const restaurantUser = await Restaurant.findOne({ email });
+  const restaurantUser = await Restaurant.restaurantBasicDetail(email)
 
-    if (!restaurantUser) {
-      return next(
-        new ErrorResponse(
-          `User does not exist. Please register to continue.`,
-          404
-        )
-      );
-    }
-
-    const { token, options } = await sendTokenResponse(restaurantUser);
-
-    res.cookie("token", token, options).send("Logged In!");
+  if (!restaurantUser) {
+    return next(
+      new ErrorResponse(
+        `User does not exist. Please register to continue.`,
+        404
+      )
+    );
   }
+  console.log(restaurantUser)
+  const { token, options } = await sendTokenResponse(restaurantUser);
+  res.cookie("token", token, options).send(restaurantUser);
+}
 );
 
 export const restaurantRegisterHandler = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
@@ -121,7 +111,6 @@ export const logoutHandler = asyncHandler(async (req: Request, res: Response, ne
 })
 
 export const getUserInfoHandler = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-  // console.log("ID SHIT", req.userId)
   const user = await User.findById(req.userId);
   if (user) {
     return res.send({ name: user?.name, email: user?.email })
@@ -131,7 +120,7 @@ export const getUserInfoHandler = asyncHandler(async (req: Request, res: Respons
 })
 
 // cookie maker***********
-const sendTokenResponse = async (user: IUser | IRestaurant) => {
+const sendTokenResponse = async (user: IUser | IRestaurant, cookieData?: any) => {
   const token = await user.getSignedJWTToken();
   console.log(token);
   const options = {

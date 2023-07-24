@@ -2,7 +2,7 @@ import { NextFunction } from "connect";
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import Role from "./Role";
+import Role from "./Role.model";
 
 export interface IUser extends mongoose.Document {
   name: String;

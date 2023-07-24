@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { ILogin } from "@utils/interfaces/auth/auth.interface";
 import { axiosInstance } from "../../utils/axios/axios";
-import Cookies from "js-cookie";
 
 const initialState = {
     isLoggedIn: false,

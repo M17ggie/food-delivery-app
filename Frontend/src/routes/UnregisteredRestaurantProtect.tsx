@@ -1,16 +1,15 @@
-import React from 'react'
 import { useSelector } from 'react-redux'
-import { Outlet, redirect } from 'react-router-dom'
+import { Navigate, Outlet } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
 const UnregisteredRestaurantProtect = () => {
-    const isDetailsSubmitted = useSelector((state: any) => state.unregisteredRestaurant.isDetailsSubmitted)
+    const isDetailsSubmitted = useSelector((state: any) => state.restaurantApi.isDetailsSubmitted)
     console.log({ isDetailsSubmitted })
     if (!isDetailsSubmitted) {
         return <Outlet />
     }
     toast.info("Your have submitted your details. Please login to check status of your application");
-    redirect('/partner-with-us');
+    <Navigate to="/partner-with-us" />;
     return null;
 }
 

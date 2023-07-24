@@ -1,11 +1,9 @@
-import React from 'react'
-import { IFoodDish } from '@utils/interfaces/restaurant-registration/RestaurantRegister'
-import { Box, Card, CardContent, CardMedia, Dialog, Grid, IconButton, Typography } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
-import { useDispatch } from 'react-redux';
+import { Box, Card, CardContent, CardMedia, Dialog, Grid, IconButton, Typography } from '@mui/material';
 import { openModal, removeDish, selectDishToEdit } from '@store/restaurant-register/dishReducer';
-import { useSelector } from 'react-redux';
+import { IFoodDish } from '@utils/interfaces/restaurant-registration/RestaurantRegister';
+import { useDispatch, useSelector } from 'react-redux';
 import AddDish from './AddDish';
 
 const FoodDishCard = ({ id, name, price, description, photo, foodType, imageURL }: IFoodDish) => {

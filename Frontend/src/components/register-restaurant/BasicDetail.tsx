@@ -7,7 +7,7 @@ import { CardContent, Input } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
 import { addRestaurantDetails } from '@store/restaurant-register/restaurant-details';
 import { useSelector } from 'react-redux';
-import { fileSchema } from '@utils/validation/validation';
+import { fileSchema, validationHandler } from '@utils/validation/validation';
 
 const BasicDetail = ({ next, prev }: { next: Function, prev: Function }) => {
 
@@ -34,7 +34,6 @@ const BasicDetail = ({ next, prev }: { next: Function, prev: Function }) => {
         }
     });
     const [errors, setErrors] = useState<any>({});
-    console.log(basicDetails)
     const schema = yup.object().shape({
         restaurantName: yup.string().required('Please enter restaurant\'s name').max(30, 'Name should not exceed 50 characters'),
         restaurantAddress: yup.string().required('Please enter restaurant\'s address').min(10, 'Please write address in brief'),
@@ -76,10 +75,22 @@ const BasicDetail = ({ next, prev }: { next: Function, prev: Function }) => {
             }))
         }
         else if (files && files.length > 0) {
-            setBasicDetails({
-                ...basicDetails,
-                [name]: files[0]
-            })
+            const reader = new FileReader();
+            reader.onload = () => {
+                const base64Data = reader.result as string;
+                setBasicDetails({
+                    ...basicDetails,
+                    [name]: base64Data
+                });
+                dispatch(addRestaurantDetails({
+                    type: "basicDetail",
+                    details: {
+                        ...basicDetails,
+                        [name]: base64Data
+                    }
+                }))
+            };
+            reader.readAsDataURL(files[0]);
         }
         else {
             setBasicDetails({
@@ -128,20 +139,13 @@ const BasicDetail = ({ next, prev }: { next: Function, prev: Function }) => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
-        try {
-            await schema.validate(basicDetails, { abortEarly: false });
+        console.log(basicDetails)
+        const a = await validationHandler(schema, basicDetails);
+        if (a === "valid") {
             setErrors({});
             next();
-        } catch (err: unknown) {
-            if (err instanceof yup.ValidationError) {
-                const newErrors: { [key: string]: string } = {};
-                err.inner.forEach((error: any) => {
-                    newErrors[error.path] = error.message
-                })
-                setErrors(newErrors);
-            } else {
-                console.log('This is beyond my scope');
-            }
+        } else {
+            setErrors(a)
         }
         setIsLoading(false)
     }
