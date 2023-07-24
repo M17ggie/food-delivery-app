@@ -142,8 +142,15 @@ RestaurantSchema.pre('save', async function (next: NextFunction) {
     if (!this.isModified('password')) {
         return next();
     }
+
+    const password = this.password as string;
+
+    if (!password) {
+        return next();
+    }
+
     const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
+    this.password = await bcrypt.hash(password, salt);
     next();
 })
 
