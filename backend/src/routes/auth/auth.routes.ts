@@ -1,6 +1,6 @@
 import express from 'express';
-import { userLoginHandler, userRegisterHandler, restaurantLoginHandler, restaurantRegisterHandler, logoutHandler, getUserInfoHandler } from "../../controllers/auth/auth.controller";
-import { adminOnly } from '../../middleware/protected.middleware';
+import { getUserInfoHandler, logoutStateHandler, restaurantLoginHandler, restaurantRegisterHandler, userLoginHandler, userRegisterHandler } from "../../controllers/auth/auth.controller";
+import { authenticatedOnly } from '../../middleware/protected.middleware';
 
 const router = express.Router();
 
@@ -13,9 +13,9 @@ router.route('/restaurant/login').post(restaurantLoginHandler)
 router.route('/restaurant/register').post(restaurantRegisterHandler)
 
 //get user info
-router.route('/get-user').get(adminOnly, getUserInfoHandler)
+router.route('/:userType/get-user').get(authenticatedOnly, getUserInfoHandler)
 
 //logout
-router.route('/logout').post(logoutHandler)
+router.route('/logout').get(logoutStateHandler)
 
 module.exports = router

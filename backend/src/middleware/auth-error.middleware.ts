@@ -4,7 +4,7 @@ import { ErrorResponse } from '../utils/errorResponse';
 const errorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
     let error: any = { ...err }
 
-    console.log(err.name, err.message)
+    console.log("ERROR SHIT", err.name, err.message, err.stack)
 
     //non-enumerable property
     error.message = err.message;

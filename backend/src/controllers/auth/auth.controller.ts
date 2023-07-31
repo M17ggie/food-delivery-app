@@ -1,8 +1,20 @@
 import { NextFunction, Request, Response } from "express";
+import mongoose, { Types } from "mongoose";
 import { asyncHandler } from "../../middleware/async.middleware";
-import { ErrorResponse } from "../../utils/errorResponse";
+import Restaurant, { IRestaurant } from "../../models/Restaurant.model";
+import Role from "../../models/Role.model";
 import User, { IUser } from "../../models/User.model";
-import Restaurant, { IRestaurant, IRestaurantModel } from "../../models/Restaurant.model";
+import { ErrorResponse } from "../../utils/errorResponse";
+
+const getRoleId = async (slug: string) => {
+  try {
+    const roleId = await Role.findOne({ slug });
+    console.log("ROLE SHIT", roleId)
+    return roleId?._id
+  } catch (err) {
+    return null
+  }
+}
 
 // validate credentials***************************
 const validateCredentials = (
@@ -16,11 +28,12 @@ const validateCredentials = (
 };
 
 // register user**************************
-const registerUser = async (userModel: any, email: string, password: string, name: string) => {
+const registerUser = async (userModel: any, email: string, password: string, name: string, role?: Types.ObjectId) => {
   const user = await userModel.create({
     name,
     email,
     password,
+    role: new mongoose.Types.ObjectId(role)
   });
 
   const { token, options } = await sendTokenResponse(user);
@@ -61,8 +74,8 @@ export const userLoginHandler = asyncHandler(async (req: Request, res: Response,
 
 export const userRegisterHandler = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
   const { name, password, email } = req.body;
-
-  const { token, options } = await registerUser(User, email, password, name);
+  const roleId = await getRoleId("user");
+  const { token, options } = await registerUser(User, email, password, name, roleId as Types.ObjectId);
   res.cookie("token", token, options).send("Registered");
 }
 );
@@ -78,14 +91,8 @@ export const restaurantLoginHandler = asyncHandler(async (req: Request, res: Res
   const restaurantUser = await Restaurant.restaurantBasicDetail(email)
 
   if (!restaurantUser) {
-    return next(
-      new ErrorResponse(
-        `User does not exist. Please register to continue.`,
-        404
-      )
-    );
+    return next(new ErrorResponse(`User does not exist. Please register to continue.`, 404));
   }
-  console.log(restaurantUser)
   const { token, options } = await sendTokenResponse(restaurantUser);
   res.cookie("token", token, options).send(restaurantUser);
 }
@@ -99,21 +106,36 @@ export const restaurantRegisterHandler = asyncHandler(async (req: Request, res: 
     password,
     name
   );
-
-  await registerUser(User, email, password, name);
+  const roleId = await getRoleId("user")
+  await registerUser(User, email, password, name, roleId as Types.ObjectId);
   res.cookie("token", token, options).send("Registered Restaurant");
 })
 
 // logout handler******************************
 
-export const logoutHandler = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+export const logoutStateHandler = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    expires: new Date(0)
+  })
   res.send('Logged Out!')
 })
 
 export const getUserInfoHandler = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-  const user = await User.findById(req.userId);
+  const { userType } = req.params;
+  let user;
+  let resData;
+  switch (userType) {
+    case "user": user = await User.findById(req.userId);
+      resData = { name: user?.name, email: user?.email, id: user?._id };
+      break;
+    case "restaurant": user = await Restaurant.findById(req.userId);
+      resData = { name: user?.name, email: user?.email, id: user?._id, isDetailsSubmitted: user?.isDetailsSubmitted, status: user?.status };
+      break;
+    default: return null
+  }
   if (user) {
-    return res.send({ name: user?.name, email: user?.email })
+    return res.send(resData)
   } else {
     return next(new ErrorResponse('User not found', 404))
   }
@@ -122,7 +144,6 @@ export const getUserInfoHandler = asyncHandler(async (req: Request, res: Respons
 // cookie maker***********
 const sendTokenResponse = async (user: IUser | IRestaurant, cookieData?: any) => {
   const token = await user.getSignedJWTToken();
-  console.log(token);
   const options = {
     httpOnly: true
   };

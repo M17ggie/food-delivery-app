@@ -10,6 +10,6 @@ const RoleSchema = new mongoose.Schema({
   slug: String,
 });
 
-const Role = mongoose.model("role", RoleSchema);
+const Role = mongoose.model<IRole>("Role", RoleSchema);
 
 export default Role;

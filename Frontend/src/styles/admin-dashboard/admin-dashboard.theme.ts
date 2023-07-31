@@ -6,6 +6,9 @@ const adminDashboardStyle: Theme = createTheme({
         primary: {
             main: "#f50057",
         },
+        secondary:{
+            main:"#5865F2"
+        }
     },
     components: {}
 })

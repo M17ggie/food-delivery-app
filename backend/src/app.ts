@@ -24,6 +24,7 @@ app.use(cookieParser())
 
 const authRoutes = require('./routes/auth/auth.routes');
 const authErrorHandler = require('./middleware/auth-error.middleware');
+
 const registerRoutes = require('./routes/register/register.routes')
 
 //authentication

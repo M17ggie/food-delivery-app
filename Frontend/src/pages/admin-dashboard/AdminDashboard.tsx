@@ -1,8 +1,9 @@
-import { Tab, Tabs } from "@mui/material"
-import RestaurantList from "./RestaurantList"
+import { Box, Tab, Tabs } from "@mui/material"
+import RestaurantList from "../../components/admin-panel/RestaurantList"
 import { useState } from "react"
 import { ThemeProvider } from "@emotion/react";
 import { adminDashboardTheme } from "@styles/admin-dashboard/admin-dashboard.theme";
+import Header from "@components/header/Header";
 
 const AdminDashboard = () => {
 
@@ -22,11 +23,14 @@ const AdminDashboard = () => {
 
     return (
         <ThemeProvider theme={adminDashboardTheme}>
-            <Tabs value={tabValue} onChange={handleTabChange} textColor="primary" indicatorColor="primary">
-                <Tab label="Restaurants" />
-                {/* <Tab label="Delivery Executives" /> */}
-            </Tabs>
-            {tabContentHandler(tabValue)}
+            <Header />
+            <Box sx={{ marginTop: "4rem" }}>
+                <Tabs value={tabValue} onChange={handleTabChange} textColor="primary" indicatorColor="primary">
+                    <Tab label="Restaurants" />
+                    {/* <Tab label="Delivery Executives" /> */}
+                </Tabs>
+                {tabContentHandler(tabValue)}
+            </Box>
         </ThemeProvider>
     )
 }

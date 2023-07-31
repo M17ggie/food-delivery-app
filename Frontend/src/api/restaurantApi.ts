@@ -1,12 +1,13 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { axiosInstance } from "@utils/axios/axios";
+import { IBasicDetails, IFoodDetail, IMetaDetail } from "@utils/interfaces/restaurant-registration/RestaurantRegister";
 
 const initialState = {
     isLoading: false,
     isDetailsSubmitted: false
 }
 
-export const registerRestaurantHandler = createAsyncThunk("register-restaurant", async (payload, { rejectWithValue }) => {
+export const registerRestaurantHandler = createAsyncThunk("register-restaurant", async (payload: { basicDetail: IBasicDetails, metaDetail: IMetaDetail, foodDetail: IFoodDetail }, { rejectWithValue }) => {
     try {
         const response = await axiosInstance.post(`/register/restaurant/details`, payload);
         return response;
@@ -21,14 +22,14 @@ export const getRestaurantBasicDetail = createAsyncThunk("get-basic-restaurant-d
     } catch (error: any) {
         return rejectWithValue(error?.response?.data ?? 'An error occured')
     }
-})
+});
 
 const restaurantApiSlice = createSlice({
     name: "restaurant-api",
     initialState,
     reducers: {
         getBasicRestaurantDetail: (state, { payload }) => {
-            state.isDetailsSubmitted = payload.data.isDetailsSubmitted;
+            state.isDetailsSubmitted = payload.isDetailsSubmitted;
         }
     },
     extraReducers: {

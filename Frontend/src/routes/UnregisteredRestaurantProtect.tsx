@@ -1,15 +1,20 @@
+import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { Navigate, Outlet } from 'react-router-dom'
+import { Navigate, Outlet, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 
 const UnregisteredRestaurantProtect = () => {
-    const isDetailsSubmitted = useSelector((state: any) => state.restaurantApi.isDetailsSubmitted)
-    console.log({ isDetailsSubmitted })
+    const navigate = useNavigate()
+    const isDetailsSubmitted = useSelector((state: any) => state.user.isDetailsSubmitted);
+    useEffect(() => {
+        if (isDetailsSubmitted) {
+            toast.info("Your have submitted your details!");
+        }
+    }, [isDetailsSubmitted])
     if (!isDetailsSubmitted) {
         return <Outlet />
     }
-    toast.info("Your have submitted your details. Please login to check status of your application");
-    <Navigate to="/partner-with-us" />;
+    navigate("/restaurant/dashboard");
     return null;
 }
 

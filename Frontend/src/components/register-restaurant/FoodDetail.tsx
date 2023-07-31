@@ -6,15 +6,16 @@ import FoodDishCard from '@components/food-dish/FoodDishCard'
 import AddDish from '@components/food-dish/AddDish'
 import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux'
-import { openModal } from '@store/restaurant-register/dishReducer'
+import { openModal } from '@store/restaurant-register/dish.reducer'
 import { CardContent } from '@material-ui/core'
 import { addRestaurantDetails } from '@store/restaurant-register/restaurant-details'
 import { registerRestaurantHandler } from '@api/restaurantApi'
 import { fileSchema } from '@utils/validation/validation'
+import { AppDispatch } from '../../store'
 
 const FoodDetail = ({ next, prev }: { next: Function, prev: Function }) => {
 
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<AppDispatch>();
     const { dishes, isModalOpen: showAddDishModal } = useSelector((state: any) => state.dish);
     const { metaDetail, basicDetail } = useSelector((state: any) => state.restaurantDetails)
     const [foodDetail, setFoodDetail] = useState<IFoodDetail>({
@@ -63,24 +64,23 @@ const FoodDetail = ({ next, prev }: { next: Function, prev: Function }) => {
         try {
             await schema.validate(foodDetail, { abortEarly: false });
             setErrors({});
-            // const foodDishDetails: any = foodDetail.foodDishes && [...foodDetail.foodDishes].map(food => { return { ...food, imageURL: undefined } }) || [];
             dispatch(registerRestaurantHandler({
                 basicDetail,
                 metaDetail,
                 foodDetail
             }));
-            // dispatch(addRestaurantDetails({
-            //     type: "basicDetail",
-            //     details: {}
-            // }))
-            // dispatch(addRestaurantDetails({
-            //     type: "metaDetail",
-            //     details: {}
-            // }))
-            // dispatch(addRestaurantDetails({
-            //     type: "foodDetail",
-            //     details: {}
-            // }))
+            dispatch(addRestaurantDetails({
+                type: "basicDetail",
+                details: {}
+            }))
+            dispatch(addRestaurantDetails({
+                type: "metaDetail",
+                details: {}
+            }))
+            dispatch(addRestaurantDetails({
+                type: "foodDetail",
+                details: {}
+            }))
         } catch (err: unknown) {
             if (err instanceof yup.ValidationError) {
                 const newErrors: { [key: string]: string } = {};
