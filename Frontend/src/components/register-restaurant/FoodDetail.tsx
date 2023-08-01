@@ -1,17 +1,17 @@
-import { Box, Button, Card, Input, Typography, Dialog } from '@mui/material'
-import { useEffect, useState } from 'react'
-import { IFoodDetail, IFoodDish } from '@utils/interfaces/restaurant-registration/RestaurantRegister'
-import * as yup from 'yup'
-import FoodDishCard from '@components/food-dish/FoodDishCard'
-import AddDish from '@components/food-dish/AddDish'
-import { useSelector } from 'react-redux'
-import { useDispatch } from 'react-redux'
-import { openModal } from '@store/restaurant-register/dish.reducer'
-import { CardContent } from '@material-ui/core'
-import { addRestaurantDetails } from '@store/restaurant-register/restaurant-details'
 import { registerRestaurantHandler } from '@api/restaurantApi'
+import AddDish from '@components/food-dish/AddDish'
+import FoodDishCard from '@components/food-dish/FoodDishCard'
+import { CardContent } from '@material-ui/core'
+import { Box, Button, Card, Dialog, Input, Typography } from '@mui/material'
+import { openModal } from '@store/restaurant-register/dish.reducer'
+import { addRestaurantDetails } from '@store/restaurant-register/restaurant-details'
+import { IFoodDetail } from '@utils/interfaces/restaurant-registration/RestaurantRegister'
 import { fileSchema } from '@utils/validation/validation'
+import { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import * as yup from 'yup'
 import { AppDispatch } from '../../store'
+import { toast } from 'react-toastify'
 
 const FoodDetail = ({ next, prev }: { next: Function, prev: Function }) => {
 
@@ -56,7 +56,7 @@ const FoodDetail = ({ next, prev }: { next: Function, prev: Function }) => {
         menuCard: fileSchema
     });
 
-    console.log(foodDetail)
+    console.log("WTF", { basicDetail, metaDetail })
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -68,19 +68,23 @@ const FoodDetail = ({ next, prev }: { next: Function, prev: Function }) => {
                 basicDetail,
                 metaDetail,
                 foodDetail
-            }));
-            dispatch(addRestaurantDetails({
-                type: "basicDetail",
-                details: {}
-            }))
-            dispatch(addRestaurantDetails({
-                type: "metaDetail",
-                details: {}
-            }))
-            dispatch(addRestaurantDetails({
-                type: "foodDetail",
-                details: {}
-            }))
+            })).unwrap().then(res => {
+                dispatch(addRestaurantDetails({
+                    type: "basicDetail",
+                    details: {}
+                }))
+                dispatch(addRestaurantDetails({
+                    type: "metaDetail",
+                    details: {}
+                }))
+                dispatch(addRestaurantDetails({
+                    type: "foodDetail",
+                    details: {}
+                }));
+                toast.success("Restaurant registered succesfully! Please login again to continue!")
+            }).catch(err => {
+                toast.error("An error occurred")
+            });
         } catch (err: unknown) {
             if (err instanceof yup.ValidationError) {
                 const newErrors: { [key: string]: string } = {};

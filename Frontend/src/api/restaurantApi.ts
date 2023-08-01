@@ -10,7 +10,7 @@ const initialState = {
 export const registerRestaurantHandler = createAsyncThunk("register-restaurant", async (payload: { basicDetail: IBasicDetails, metaDetail: IMetaDetail, foodDetail: IFoodDetail }, { rejectWithValue }) => {
     try {
         const response = await axiosInstance.post(`/register/restaurant/details`, payload);
-        return response;
+        return response.data;
     } catch (error: any) {
         return rejectWithValue(error?.response?.data ?? 'An error occured')
     }

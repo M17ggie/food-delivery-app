@@ -44,8 +44,7 @@ const SignUpForm = ({ login, userType }: { login: Function, userType: string }) 
             axios.post(`${BASE_URL}/api/v1/auth/${userType}/register`, {
                 ...signUpData
             }).then((res: AxiosResponse) => {
-                login()
-                console.log(res.data)
+                login();
             }).catch((err: AxiosError) => {
                 console.log(err.response?.data)
             })

@@ -9,7 +9,6 @@ import { ErrorResponse } from "../../utils/errorResponse";
 const getRoleId = async (slug: string) => {
   try {
     const roleId = await Role.findOne({ slug });
-    console.log("ROLE SHIT", roleId)
     return roleId?._id
   } catch (err) {
     return null
@@ -29,6 +28,12 @@ const validateCredentials = (
 
 // register user**************************
 const registerUser = async (userModel: any, email: string, password: string, name: string, role?: Types.ObjectId) => {
+  console.log("WTF", {
+    name,
+    email,
+    password,
+    role: new mongoose.Types.ObjectId(role)
+  })
   const user = await userModel.create({
     name,
     email,
@@ -76,7 +81,7 @@ export const userRegisterHandler = asyncHandler(async (req: Request, res: Respon
   const { name, password, email } = req.body;
   const roleId = await getRoleId("user");
   const { token, options } = await registerUser(User, email, password, name, roleId as Types.ObjectId);
-  res.cookie("token", token, options).send("Registered");
+  res.cookie("token", token, options).send("User Registered");
 }
 );
 
@@ -100,14 +105,8 @@ export const restaurantLoginHandler = asyncHandler(async (req: Request, res: Res
 
 export const restaurantRegisterHandler = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
   const { email, password, name } = req.body;
-  const { token, options } = await registerUser(
-    Restaurant,
-    email,
-    password,
-    name
-  );
-  const roleId = await getRoleId("user")
-  await registerUser(User, email, password, name, roleId as Types.ObjectId);
+  const roleId = await getRoleId("restaurant");
+  const { token, options } = await registerUser(Restaurant, email, password, name, roleId as Types.ObjectId);
   res.cookie("token", token, options).send("Registered Restaurant");
 })
 

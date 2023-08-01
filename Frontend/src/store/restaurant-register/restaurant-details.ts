@@ -29,7 +29,7 @@ const restaurantDetailSlice = createSlice({
                     state.metaDetail = details as IMetaDetail;
                     break;
                 case "foodDetail":
-                    state.foodDetail = details as IBasicDetails;
+                    state.foodDetail = details as IFoodDetail;
                     break;
                 default:
                     break;
