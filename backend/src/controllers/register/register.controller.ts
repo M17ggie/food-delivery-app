@@ -13,7 +13,6 @@ export const registerRestaurantDetailsHandler = asyncHandler(async (req: Request
         if (!restaurant) {
             return next(new ErrorResponse("No restaurant found", 404))
         }
-        // console.log(req.body.foodDetail);
         restaurant.metaDetail = req.body.metaDetail;
         restaurant.basicDetail = req.body.basicDetail;
         restaurant.menuCard = req.body.foodDetail.menuCard;

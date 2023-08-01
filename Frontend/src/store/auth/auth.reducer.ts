@@ -17,16 +17,22 @@ export const loginHandler = createAsyncThunk("login-handler", async (payload: { 
     }
 })
 
+export const logoutHandler = createAsyncThunk("logout-handler", async (payload, { rejectWithValue }) => {
+    try {
+        const response = await axiosInstance.get(`auth/logout`)
+    } catch (err: any) {
+        return rejectWithValue(err?.response?.data ?? 'An error occured')
+    }
+})
+
 const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-        loginStateHandler: (state, { payload }) => {
-            console.log(payload["headers"]);
-            // Cookies.set();
+        loginStateHandler: (state) => {
             state.isLoggedIn = true
         },
-        logoutHandler: (state) => {
+        logoutStateHandler: (state) => {
             state.isLoggedIn = false
         }
     },
@@ -45,5 +51,5 @@ const authSlice = createSlice({
     }
 })
 
-export const { loginStateHandler, logoutHandler } = authSlice.actions
+export const { loginStateHandler, logoutStateHandler } = authSlice.actions
 export default authSlice.reducer

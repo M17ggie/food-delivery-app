@@ -1,8 +1,7 @@
-import { NextFunction } from "connect";
-import mongoose from "mongoose";
 import bcrypt from "bcrypt";
+import { NextFunction } from "connect";
 import jwt from "jsonwebtoken";
-import Role from "./Role.model";
+import mongoose from "mongoose";
 
 export interface IUser extends mongoose.Document {
   name: String;
@@ -30,7 +29,7 @@ const UserSchema = new mongoose.Schema<IUser>(
       required: [true, "Please enter valid email"],
       unique: true,
     },
-    role: [{ type: mongoose.Types.ObjectId, ref: Role }],
+    role: { type: mongoose.Schema.Types.ObjectId, ref: 'Role' },
     password: {
       type: String,
       required: [true, "Password is required"],
@@ -63,7 +62,7 @@ UserSchema.methods.getSignedJWTToken = async function () {
     .populate("role")
     .exec();
   return jwt.sign(
-    { id: this._id, role: user.role[0]._id.toString() },
+    { id: this._id, role: user.role._id.toString() },
     process.env.JWT_SECRET!
   );
 };

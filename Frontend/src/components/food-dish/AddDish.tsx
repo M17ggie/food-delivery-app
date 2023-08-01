@@ -7,8 +7,8 @@ import { FormControlLabel, Input, InputLabel, Radio, RadioGroup, Select, Typogra
 import { dishType } from '@locales/en/restaurant-registration/food-detail';
 import { randomId, selectValueHandler } from '@utils/helpers/helpers';
 import { useDispatch } from 'react-redux';
-import { addDish, editDish } from '@store/restaurant-register/dishReducer';
-import { closeModal } from '@store/restaurant-register/dishReducer';
+import { addDish, editDish } from '@store/restaurant-register/dish.reducer';
+import { closeModal } from '@store/restaurant-register/dish.reducer';
 import { useSelector } from 'react-redux';
 
 

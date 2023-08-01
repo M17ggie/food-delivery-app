@@ -160,8 +160,15 @@ RestaurantSchema.methods.matchedPasswords = async function (enteredPassword: str
 }
 
 //Sign JWT and return
-RestaurantSchema.methods.getSignedJWTToken = function () {
-    return jwt.sign({ id: this._id }, process.env.JWT_SECRET!)
+RestaurantSchema.methods.getSignedJWTToken = async function () {
+    const user = await this.model("Restaurant")
+        .findById(this._id)
+        .populate("role")
+        .exec();
+    return jwt.sign(
+        { id: this._id, role: user.role[0]._id.toString() },
+        process.env.JWT_SECRET!
+    );
 }
 
 //Find restaurant

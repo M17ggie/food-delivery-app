@@ -1,11 +1,16 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Avatar, Button, ClickAwayListener, Grow, MenuItem, MenuList, Paper, Popper } from '@material-ui/core';
+import { Button, ClickAwayListener, Grow, MenuItem, MenuList, Paper, Popper } from '@material-ui/core';
 import { AccountCircle } from '@mui/icons-material';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { logoutHandler } from '../../store/auth/authReducer';
+import { AppDispatch } from '@store/index';
+import { logoutHandler, logoutStateHandler } from '@store/auth/auth.reducer';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const UserDropdown = () => {
-    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const dispatch = useDispatch<AppDispatch>();
+    const { name } = useSelector((state: any) => state.user)
     const [open, setOpen] = useState(false);
     const anchorRef = useRef<HTMLButtonElement>(null);
 
@@ -47,7 +52,11 @@ const UserDropdown = () => {
     }, []);
 
     const handleLogout = () => {
-        dispatch(logoutHandler());
+        dispatch(logoutHandler()).unwrap().then(res => {
+            dispatch(logoutStateHandler());
+            window.location.reload();
+            navigate("/")
+        });
     }
 
     return (
@@ -57,10 +66,10 @@ const UserDropdown = () => {
                 aria-controls={open ? 'menu-list-grow' : undefined}
                 aria-haspopup="true"
                 onClick={handleToggle}
-                startIcon={<AccountCircle style={{ color: 'white' }} />}
-                style={{ color: 'white' }}
+                startIcon={<AccountCircle style={{ color: 'black' }} />}
+                style={{ color: 'black' }}
             >
-                User
+                {name}
             </Button>
             <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
                 {({ TransitionProps, placement }) => (
@@ -74,7 +83,7 @@ const UserDropdown = () => {
                             <ClickAwayListener onClickAway={handleClickAway}>
                                 <MenuList autoFocus={open} id="menu-list-grow" onKeyDown={handleListKeyDown}>
                                     <MenuItem onClick={handleClose}>Profile</MenuItem>
-                                    <MenuItem onClick={handleClose}>My Account</MenuItem>
+                                    <MenuItem onClick={handleClose}>Order</MenuItem>
                                     <MenuItem onClick={handleLogout}>Logout</MenuItem>
                                 </MenuList>
                             </ClickAwayListener>

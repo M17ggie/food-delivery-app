@@ -39,14 +39,14 @@ const Navbar = ({ userType }: { userType: string }) => {
     }
 
     const listItemsContent: React.ReactNode = <List key={0} sx={{ display: "flex", flexDirection: { xs: "column", sm: "row" } }}>
-        <ListItem key={1}>
-            <Link style={{ textDecoration: 'none' }} to="/partner-with-us">
-                <Typography sx={{ whiteSpace: 'nowrap', color: 'white' }}>
-                    Add Restaurant
-                </Typography>
-            </Link>
-        </ListItem>
         <UnAuthContent>
+            <ListItem key={1}>
+                <Link style={{ textDecoration: 'none' }} to="/partner-with-us">
+                    <Typography sx={{ whiteSpace: 'nowrap', color: 'white' }}>
+                        Add Restaurant
+                    </Typography>
+                </Link>
+            </ListItem>
             <ListItem key={2}>
                 <Button className='primary-btn' onClick={() => { loginContentHandler() }}>
                     Login

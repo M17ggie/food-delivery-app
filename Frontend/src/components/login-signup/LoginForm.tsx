@@ -6,7 +6,7 @@ import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import * as yup from 'yup';
 import { getBasicRestaurantDetail } from '../../api/restaurantApi';
-import { loginHandler, loginStateHandler } from '../../store/auth/authReducer';
+import { loginHandler, loginStateHandler } from '../../store/auth/auth.reducer';
 import AuthButton from './AuthButton';
 import { useNavigate } from 'react-router-dom';
 
@@ -41,12 +41,13 @@ const LoginForm = ({ close, userType }: { close: Function, userType: string }) =
             await schema.validate(loginData, { abortEarly: false });
             setErrors({});
             dispatch(loginHandler({ loginDetails: loginData, userType })).unwrap().then((res) => {
-                dispatch(loginStateHandler(res))
+                dispatch(loginStateHandler())
                 switch (userType) {
-                    case "restaurant": const response = dispatch(getBasicRestaurantDetail(res));
-                        const isDetailsSubmitted = response.payload.data.isDetailsSubmitted
+                    // case "user": 
+                    case "restaurant": const response = dispatch(getBasicRestaurantDetail(res.data));
+                        const isDetailsSubmitted = response.payload.isDetailsSubmitted;
                         if (isDetailsSubmitted) {
-                            navigate("/restaurant-dashboard", { replace: true });
+                            navigate("/restaurant/dashboard", { replace: true });
                         } else {
                             navigate("/register/restaurant", { replace: true });
                         }

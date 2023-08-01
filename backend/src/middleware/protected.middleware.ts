@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import { ErrorResponse } from "../utils/errorResponse";
 import { IToken } from "../utils/interfaces";
 import cookie from 'cookie'
+import { decodeJwtCookieToken } from "../utils/helpers";
 
 export const adminOnly = (req: Request, res: Response, next: NextFunction) => {
   const cookies = req.headers.cookie;
@@ -26,3 +27,19 @@ export const adminOnly = (req: Request, res: Response, next: NextFunction) => {
     return next(new ErrorResponse("Intruder", 401));
   }
 };
+
+export const authenticatedOnly = (req: Request, res: Response, next: NextFunction) => {
+  const cookies = req.headers.cookie;
+  if (cookies) {
+    const { role, id } = decodeJwtCookieToken(cookies);
+    if (role) {
+      req.role = role;
+      req.userId = id!;
+      next();
+    } else {
+      return next(new ErrorResponse("Invalid token", 401))
+    }
+  } else {
+    return next(new ErrorResponse("Invalid token", 401))
+  }
+}
