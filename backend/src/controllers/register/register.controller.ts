@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import Restaurant from "../../models/Restaurant.model";
-import { decodeJwtCookieToken } from "../../utils/helpers";
 import { asyncHandler } from "../../middleware/async.middleware";
+import Restaurant from "../../models/Restaurant.model";
 import { ErrorResponse } from "../../utils/errorResponse";
+import { decodeJwtCookieToken } from "../../utils/helpers";
 
 //register/update restaurant
 export const registerRestaurantDetailsHandler = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {

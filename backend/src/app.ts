@@ -25,12 +25,18 @@ app.use(cookieParser())
 const authRoutes = require('./routes/auth/auth.routes');
 const authErrorHandler = require('./middleware/auth-error.middleware');
 
-const registerRoutes = require('./routes/register/register.routes')
+const registerRoutes = require('./routes/register/register.routes');
+
+const listRoutes = require("./routes/list/list.routes");
+const getDetailRoutes = require("./routes/get-detail/get-detail.routes");
 
 //authentication
 app.use('/api/v1/auth', authRoutes);
 app.use(authErrorHandler);
 
-app.use('/api/v1/register', registerRoutes)
+app.use('/api/v1/register', registerRoutes);
+
+app.use('/api/v1/get-list', listRoutes);
+app.use('/api/v1/get-detail', getDetailRoutes)
 
 export default app
