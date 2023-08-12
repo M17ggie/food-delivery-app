@@ -2,7 +2,6 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 import cors from 'cors';
-import session from 'express-session'
 
 const envPath = path.resolve(__dirname, 'config', '.env')
 require('dotenv').config({ path: envPath });
@@ -29,6 +28,7 @@ const registerRoutes = require('./routes/register/register.routes');
 
 const listRoutes = require("./routes/list/list.routes");
 const getDetailRoutes = require("./routes/get-detail/get-detail.routes");
+const statusRoutes = require("./routes/status/status.routes")
 
 //authentication
 app.use('/api/v1/auth', authRoutes);
@@ -37,6 +37,8 @@ app.use(authErrorHandler);
 app.use('/api/v1/register', registerRoutes);
 
 app.use('/api/v1/get-list', listRoutes);
-app.use('/api/v1/get-detail', getDetailRoutes)
+app.use('/api/v1/get-detail', getDetailRoutes);
+
+app.use('/api/v1/change-status', statusRoutes);
 
 export default app

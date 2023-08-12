@@ -4,9 +4,11 @@ import { useState } from "react"
 import { ThemeProvider } from "@emotion/react";
 import { adminDashboardTheme } from "@styles/admin-dashboard/admin-dashboard.theme";
 import Header from "@components/header/Header";
+import usePageTitle from "@hooks/usePageTitle"
 
 const AdminDashboard = () => {
 
+    usePageTitle("Admin Dashboard")
     const [tabValue, setTabValue] = useState(0);
 
     const handleTabChange = (e: React.SyntheticEvent, newValue: number) => {

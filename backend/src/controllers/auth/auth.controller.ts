@@ -122,11 +122,12 @@ export const logoutStateHandler = asyncHandler(async (req: Request, res: Respons
 
 export const getUserInfoHandler = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
   const { userType } = req.params;
+  console.log(userType)
   let user;
   let resData;
   switch (userType) {
     case "user": user = await User.findById(req.userId);
-      resData = { name: user?.name, email: user?.email, id: user?._id };
+      resData = { name: user?.name, email: user?.email, id: user?._id, userType };
       break;
     case "restaurant": user = await Restaurant.findById(req.userId);
       resData = { name: user?.name, email: user?.email, id: user?._id, isDetailsSubmitted: user?.isDetailsSubmitted, status: user?.status };

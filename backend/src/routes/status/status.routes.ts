@@ -1,9 +1,9 @@
 import express from "express";
-import { getListHandler } from "../../controllers/list/list.controller";
 import { adminOnly } from "../../middleware/protected.middleware";
+import { statusHandler } from "../../controllers/status/status.controller";
 
 const router = express.Router();
 
-router.route("/").get(adminOnly, getListHandler);
+router.route("/:userType").patch(adminOnly, statusHandler);
 
 module.exports = router

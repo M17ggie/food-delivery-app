@@ -6,7 +6,13 @@ const initialState = {};
 export const getTableList = createAsyncThunk("get-list", async (payload: { userType: string, status: string }, { rejectWithValue }) => {
     const { userType, status } = payload
     try {
-        // const response = await axiosInstance.get()
+        const response = await axiosInstance.get(`/get-list/`, {
+            params: {
+                userType,
+                status
+            }
+        });
+        return response.data
     } catch (error: any) {
         return rejectWithValue(error?.response?.data ?? 'An error occured')
     }

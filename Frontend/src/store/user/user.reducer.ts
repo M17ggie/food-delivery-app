@@ -5,7 +5,8 @@ const initialState = {
     name: "",
     email: "",
     isDetailsSubmitted: false,
-    status: "pending"
+    status: "pending",
+    userType: "user"
 }
 
 export const getUserInfoHandler = createAsyncThunk("get-user-info", async (payload: { userType: string }, { rejectWithValue }) => {
@@ -27,6 +28,7 @@ const userSlice = createSlice({
             state.name = payload.name.split(" ")[0];
             state.isDetailsSubmitted = payload.isDetailsSubmitted;
             state.status = payload.status;
+            state.userType = payload.userType;
         }
     }
 })
